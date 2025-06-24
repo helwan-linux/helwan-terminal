@@ -45,9 +45,9 @@ static gboolean on_terminal_key_press(GtkWidget *widget, GdkEventKey *event, Hel
     // Check for Ctrl+Shift+V (Paste)
     else if ((event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) == (GDK_CONTROL_MASK | GDK_SHIFT_MASK) &&
              event->keyval == GDK_KEY_V) {
-        // Updated to use gtk_clipboard_read_text and vte_terminal_paste_text
-        GtkClipboard *clipboard = gtk_clipboard_get_default(gdk_display_get_default());
-        gchar *text = gtk_clipboard_read_text(clipboard);
+        // Updated to use gtk_clipboard_wait_for_text for GTK3
+        GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+        gchar *text = gtk_clipboard_wait_for_text(clipboard);
         if (text) {
             vte_terminal_paste_text(VTE_TERMINAL(widget), text);
             g_free(text);
@@ -127,8 +127,8 @@ static void on_copy_menu_item_activated(GtkMenuItem *menu_item, VteTerminal *ter
 // Callback for "Paste" menu item
 static void on_paste_menu_item_activated(GtkMenuItem *menu_item, VteTerminal *terminal) {
     (void)menu_item;
-    GtkClipboard *clipboard = gtk_clipboard_get_default(gdk_display_get_default());
-    gchar *text = gtk_clipboard_read_text(clipboard);
+    GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+    gchar *text = gtk_clipboard_wait_for_text(clipboard);
     if (text) {
         vte_terminal_paste_text(terminal, text);
         g_free(text);
@@ -154,9 +154,9 @@ static gboolean on_terminal_button_press(GtkWidget *widget, GdkEventButton *even
         if (!vte_terminal_get_has_selection(terminal)) {
             gtk_widget_set_sensitive(copy_item, FALSE);
         }
-        // Use gtk_clipboard_read_text to check for clipboard content
-        GtkClipboard *clipboard = gtk_clipboard_get_default(gdk_display_get_default());
-        gchar *clipboard_text = gtk_clipboard_read_text(clipboard);
+        // Use gtk_clipboard_wait_for_text to check for clipboard content in GTK3
+        GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+        gchar *clipboard_text = gtk_clipboard_wait_for_text(clipboard);
         if (!clipboard_text) {
              gtk_widget_set_sensitive(paste_item, FALSE);
         } else {
