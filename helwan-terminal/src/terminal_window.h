@@ -7,14 +7,14 @@
 
 // G_DECLARE_FINAL_TYPE generates the necessary type registration functions
 // and casting macros (like HELWAN_TERMINAL_WINDOW) automatically.
-// We still need to define the struct members explicitly for GTK3.
-G_DECLARE_FINAL_TYPE(HelwanTerminalWindow, helwan_terminal_window, HELWAN, TERMINAL_WINDOW, GTK_TYPE_WINDOW)
+// The 5th argument should be the C struct name of the parent type, which is 'GtkWindow'.
+G_DECLARE_FINAL_TYPE(HelwanTerminalWindow, helwan_terminal_window, HELWAN, TERMINAL_WINDOW, GtkWindow)
 
 // Define the structure for your custom window explicitly
 // This completes the 'typedef' definition for the compiler
 struct _HelwanTerminalWindow {
-    GtkWindow parent_instance;
-    GtkWidget *notebook; // Added for managing tabs
+    GtkWindow parent_instance; // GtkWindow is the direct parent instance
+    GtkWidget *notebook;       // Added for managing tabs
 };
 
 // Function to create a new instance of your custom window
