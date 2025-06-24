@@ -190,18 +190,21 @@ static void on_tab_close_button_clicked(GtkButton *button, GtkWidget *vte_widget
 GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * const *command_to_execute) {
     GtkWidget *vte = vte_terminal_new();
 
-    // ***** التعديلات هنا لحل مشكلة "discarded-qualifiers" *****
     char **spawn_command;
     if (command_to_execute && command_to_execute[0] != NULL) {
         spawn_command = (char **)command_to_execute; // Casting to char**
+        g_print("DEBUG: Executing command: ");
+        for (int i = 0; spawn_command[i] != NULL; i++) {
+            g_print("%s ", spawn_command[i]);
+        }
+        g_print("\n");
     } else {
         // Use a local, non-const array for the default command
         char *default_command[] = {"/bin/bash", NULL};
         spawn_command = default_command;
+        g_print("DEBUG: Executing default command: /bin/bash\n");
     }
-    // *******************************************************
 
-    // ***** التعديل هنا لاستخدام vte_terminal_spawn_async وتصحيح ترتيب الوسيطات بدقة بناءً على ملف vteterminal.h الخاص بك *****
     vte_terminal_spawn_async(VTE_TERMINAL(vte),        // 1: VteTerminal *terminal
                              VTE_PTY_DEFAULT,          // 2: VtePtyFlags pty_flags
                              NULL,                     // 3: const char *working_directory
@@ -215,7 +218,6 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
                              NULL,                     // 11: GCancellable *cancellable
                              (VteTerminalSpawnAsyncCallback)NULL, // 12: VteTerminalSpawnAsyncCallback callback
                              (gpointer)NULL);          // 13: gpointer user_data
-    // *************************************************************
 
     // Apply the current font settings to the new terminal from cached string
     PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
@@ -478,7 +480,6 @@ static void on_new_tab_button_clicked(GtkButton *button, HelwanTerminalWindow *w
 }
 
 // Function to create the main terminal window
-// ****** تم تعديل هذه الدالة لاستقبال argc و argv ******
 GtkWidget *create_terminal_window(gint argc, char * const *argv) {
     // Initialize GSettings for our schema
     if (!settings) {
@@ -510,7 +511,6 @@ GtkWidget *create_terminal_window(gint argc, char * const *argv) {
                                                 NULL);
 
     gtk_widget_set_app_paintable(GTK_WIDGET(window), TRUE);
-    // تم التعديل: استخدام gtk_widget_set_opacity بدلاً من gtk_window_set_opacity
     gtk_widget_set_opacity(GTK_WIDGET(window), initial_opacity);
 
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
@@ -542,35 +542,41 @@ GtkWidget *create_terminal_window(gint argc, char * const *argv) {
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_container_add(GTK_CONTAINER(window), vbox);
 
-    // يتم هنا الوصول إلى عضو 'notebook' بعد أن أصبح الهيكل كاملاً
     window->notebook = gtk_notebook_new();
     gtk_notebook_set_scrollable(GTK_NOTEBOOK(window->notebook), TRUE);
     gtk_notebook_set_tab_pos(GTK_NOTEBOOK(window->notebook), GTK_POS_TOP);
 
     gtk_box_pack_start(GTK_BOX(vbox), window->notebook, TRUE, TRUE, 0);
 
-    // ****** هنا الجزء الجديد والمهم ******
-    // نحتاج نمرر الأمر لو موجود، أو NULL لو مش موجود.
-    // هندور على "-e" في الـ arguments عشان نعرف لو فيه أمر عايز يتنفذ.
+    // رسائل تصحيح لأجل Geany
+    g_print("DEBUG: Application started with argc: %d\n", argc);
+    for (int i = 0; i < argc; i++) {
+        g_print("DEBUG: argv[%d]: %s\n", i, argv[i]);
+    }
+
     char * const *command_for_first_tab = NULL;
     if (argc > 1) { // لو فيه أي arguments بعد اسم البرنامج
         if (strcmp(argv[1], "-e") == 0) { // لو الـ argument التاني هو "-e"
             if (argc > 2) { // ولو فيه أمر بعد "-e"
                 // يبقى الأمر اللي عايز يتنفذ بيبدأ من argv[2]
                 command_for_first_tab = &argv[2];
+                g_print("DEBUG: Found -e, command will be from argv[2]\n");
             } else {
                 // لو "-e" موجود ومفيش أمر بعده، نفتح bash عادي
                 command_for_first_tab = NULL;
+                g_print("DEBUG: -e found but no command after it, falling back to /bin/bash.\n");
             }
         } else {
             // لو أول argument مش "-e"، يبقى بنعتبر كل الـ arguments أمر واحد
             command_for_first_tab = &argv[1];
+            g_print("DEBUG: No -e, command will be from argv[1].\n");
         }
+    } else {
+        g_print("DEBUG: No arguments provided, falling back to /bin/bash.\n");
     }
     
     // نفتح أول tab بالـ command اللي لقيناه (أو بـ NULL لو مفيش)
     helwan_terminal_window_new_tab(window, command_for_first_tab);
-    // *************************************************************
     
     return GTK_WIDGET(window);
 }
