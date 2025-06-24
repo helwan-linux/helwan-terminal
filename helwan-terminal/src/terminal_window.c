@@ -186,23 +186,16 @@ static void on_tab_close_button_clicked(GtkButton *button, GtkWidget *vte_widget
 }
 
 // Function to create a new terminal tab
-// تم تعديل هذه الدالة لتستقبل أمر للتنفيذ (أو NULL للـ shell العادي)
 GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * const *command_to_execute) {
     GtkWidget *vte = vte_terminal_new();
 
     char **spawn_command;
     if (command_to_execute && command_to_execute[0] != NULL) {
         spawn_command = (char **)command_to_execute; // Casting to char**
-        g_print("DEBUG: Executing command: ");
-        for (int i = 0; spawn_command[i] != NULL; i++) {
-            g_print("%s ", spawn_command[i]);
-        }
-        g_print("\n");
     } else {
         // Use a local, non-const array for the default command
         char *default_command[] = {"/bin/bash", NULL};
         spawn_command = default_command;
-        g_print("DEBUG: Executing default command: /bin/bash\n");
     }
 
     vte_terminal_spawn_async(VTE_TERMINAL(vte),        // 1: VteTerminal *terminal
@@ -390,41 +383,38 @@ static void create_preferences_dialog(HelwanTerminalWindow *window) {
     pango_font_description_free(initial_font_desc);
     g_free(font_from_settings);
 
-    // Window width (Row 1)
-    GtkWidget *width_label = gtk_label_new("Window Width:");
-    gtk_grid_attach(GTK_GRID(grid), width_label, 0, 1, 1, 1);
-    GtkWidget *width_entry = gtk_entry_new();
-    gint initial_width = 800;
-    if (settings) {
-        initial_width = g_settings_get_int(settings, "window-width");
+    // Window Width
+    GtkWidget *width_entry = gtk_grid_get_child_at(GTK_GRID(grid), 1, 1);
+    if (!width_entry || !GTK_IS_ENTRY(width_entry)) {
+        g_warning("Could not get width entry widget or it's not a GtkEntry.");
+        return;
     }
-    gtk_entry_set_text(GTK_ENTRY(width_entry), g_strdup_printf("%d", initial_width));
-    gtk_grid_attach(GTK_GRID(grid), width_entry, 1, 1, 1, 1);
-
-    // Window height (Row 2)
-    GtkWidget *height_label = gtk_label_new("Window Height:");
-    gtk_grid_attach(GTK_GRID(grid), height_label, 0, 2, 1, 1);
-    GtkWidget *height_entry = gtk_entry_new();
-    gint initial_height = 600;
+    int new_width = atoi(gtk_entry_get_text(GTK_ENTRY(width_entry)));
     if (settings) {
-        initial_height = g_settings_get_int(settings, "window-height");
+        g_settings_set_int(settings, "window-width", new_width);
     }
-    gtk_entry_set_text(GTK_ENTRY(height_entry), g_strdup_printf("%d", initial_height));
-    gtk_grid_attach(GTK_GRID(grid), height_entry, 1, 2, 1, 1);
 
-    // Opacity control (Row 3)
-    GtkWidget *opacity_label = gtk_label_new("Opacity:");
-    gtk_grid_attach(GTK_GRID(grid), opacity_label, 0, 3, 1, 1);
-    
-    GtkAdjustment *adjustment = gtk_adjustment_new(0.85, 0.0, 1.0, 0.01, 0.1, 0.0);
-    GtkWidget *opacity_scale = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, adjustment);
-    gtk_range_set_fill_level(GTK_RANGE(opacity_scale), 1.0); // Show fill up to 1.0
-    gtk_scale_set_digits(GTK_SCALE(opacity_scale), 2); // Show 2 decimal places
-
+    // Window Height
+    GtkWidget *height_entry = gtk_grid_get_child_at(GTK_GRID(grid), 1, 2);
+    if (!height_entry || !GTK_IS_ENTRY(height_entry)) {
+        g_warning("Could not get height entry widget or it's not a GtkEntry.");
+        return;
+    }
+    int new_height = atoi(gtk_entry_get_text(GTK_ENTRY(height_entry)));
     if (settings) {
-        gtk_adjustment_set_value(adjustment, g_settings_get_double(settings, "opacity"));
+        g_settings_set_int(settings, "window-height", new_height);
     }
-    gtk_grid_attach(GTK_GRID(grid), opacity_scale, 1, 3, 1, 1);
+
+    // Opacity
+    GtkWidget *opacity_scale = gtk_grid_get_child_at(GTK_GRID(grid), 1, 3); // الصف الجديد للشفافية
+    if (!opacity_scale || !GTK_IS_SCALE(opacity_scale)) {
+        g_warning("Could not get opacity scale widget or it's not a GtkScale.");
+        return;
+    }
+    double new_opacity = gtk_range_get_value(GTK_RANGE(opacity_scale));
+    if (settings) {
+        g_settings_set_double(settings, "opacity", new_opacity);
+    }
 
     // ربط المزلاج بدالة تحديث الشفافية الفورية
     g_signal_connect(opacity_scale, "value-changed", G_CALLBACK(on_opacity_scale_value_changed), window);
@@ -548,31 +538,20 @@ GtkWidget *create_terminal_window(gint argc, char * const *argv) {
 
     gtk_box_pack_start(GTK_BOX(vbox), window->notebook, TRUE, TRUE, 0);
 
-    // رسائل تصحيح لأجل Geany
-    g_print("DEBUG: Application started with argc: %d\n", argc);
-    for (int i = 0; i < argc; i++) {
-        g_print("DEBUG: argv[%d]: %s\n", i, argv[i]);
-    }
-
     char * const *command_for_first_tab = NULL;
     if (argc > 1) { // لو فيه أي arguments بعد اسم البرنامج
         if (strcmp(argv[1], "-e") == 0) { // لو الـ argument التاني هو "-e"
             if (argc > 2) { // ولو فيه أمر بعد "-e"
                 // يبقى الأمر اللي عايز يتنفذ بيبدأ من argv[2]
                 command_for_first_tab = &argv[2];
-                g_print("DEBUG: Found -e, command will be from argv[2]\n");
             } else {
                 // لو "-e" موجود ومفيش أمر بعده، نفتح bash عادي
                 command_for_first_tab = NULL;
-                g_print("DEBUG: -e found but no command after it, falling back to /bin/bash.\n");
             }
         } else {
             // لو أول argument مش "-e"، يبقى بنعتبر كل الـ arguments أمر واحد
             command_for_first_tab = &argv[1];
-            g_print("DEBUG: No -e, command will be from argv[1].\n");
         }
-    } else {
-        g_print("DEBUG: No arguments provided, falling back to /bin/bash.\n");
     }
     
     // نفتح أول tab بالـ command اللي لقيناه (أو بـ NULL لو مفيش)
