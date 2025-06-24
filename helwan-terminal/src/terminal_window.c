@@ -38,13 +38,20 @@ static gboolean on_terminal_key_press(GtkWidget *widget, GdkEventKey *event, Hel
     // Check for Ctrl+Shift+C (Copy)
     if ((event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) == (GDK_CONTROL_MASK | GDK_SHIFT_MASK) &&
         event->keyval == GDK_KEY_C) {
-        vte_terminal_copy_clipboard(VTE_TERMINAL(widget));
+        // Updated to non-deprecated function
+        vte_terminal_copy_clipboard_format(VTE_TERMINAL(widget), VTE_FORMAT_TEXT);
         return TRUE;
     }
     // Check for Ctrl+Shift+V (Paste)
     else if ((event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) == (GDK_CONTROL_MASK | GDK_SHIFT_MASK) &&
              event->keyval == GDK_KEY_V) {
-        vte_terminal_paste_clipboard(VTE_TERMINAL(widget));
+        // Updated to use gtk_clipboard_read_text and vte_terminal_paste_text
+        GtkClipboard *clipboard = gtk_clipboard_get_default(gdk_display_get_default());
+        gchar *text = gtk_clipboard_read_text(clipboard);
+        if (text) {
+            vte_terminal_paste_text(VTE_TERMINAL(widget), text);
+            g_free(text);
+        }
         return TRUE;
     }
     // Check for Ctrl++ (Zoom In) - Try both GDK_KEY_equal (for '+') and GDK_KEY_plus
@@ -114,13 +121,18 @@ static gboolean on_terminal_key_press(GtkWidget *widget, GdkEventKey *event, Hel
 // Callback for "Copy" menu item
 static void on_copy_menu_item_activated(GtkMenuItem *menu_item, VteTerminal *terminal) {
     (void)menu_item;
-    vte_terminal_copy_clipboard(terminal);
+    vte_terminal_copy_clipboard_format(terminal, VTE_FORMAT_TEXT); // Updated to non-deprecated function
 }
 
 // Callback for "Paste" menu item
 static void on_paste_menu_item_activated(GtkMenuItem *menu_item, VteTerminal *terminal) {
     (void)menu_item;
-    vte_terminal_paste_clipboard(terminal);
+    GtkClipboard *clipboard = gtk_clipboard_get_default(gdk_display_get_default());
+    gchar *text = gtk_clipboard_read_text(clipboard);
+    if (text) {
+        vte_terminal_paste_text(terminal, text);
+        g_free(text);
+    }
 }
 
 // Callback for mouse button press event on the VTE terminal
@@ -142,11 +154,15 @@ static gboolean on_terminal_button_press(GtkWidget *widget, GdkEventButton *even
         if (!vte_terminal_get_has_selection(terminal)) {
             gtk_widget_set_sensitive(copy_item, FALSE);
         }
-        GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-        if (!gtk_clipboard_wait_for_text(clipboard)) {
+        // Use gtk_clipboard_read_text to check for clipboard content
+        GtkClipboard *clipboard = gtk_clipboard_get_default(gdk_display_get_default());
+        gchar *clipboard_text = gtk_clipboard_read_text(clipboard);
+        if (!clipboard_text) {
              gtk_widget_set_sensitive(paste_item, FALSE);
+        } else {
+            g_free(clipboard_text); // Free the text after checking
         }
-
+        
         gtk_widget_show_all(menu);
         gtk_menu_popup_at_pointer(GTK_MENU(menu), (GdkEvent*)event);
 
@@ -194,7 +210,7 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
                              G_SPAWN_DEFAULT,          // 6: GSpawnFlags spawn_flags
                              NULL,                     // 7: GSpawnChildSetupFunc child_setup
                              NULL,                     // 8: gpointer child_setup_data
-                             (GDestroyNotify)NULL,     // 9: GDestroyNotify child_setup_data_destroy (كان هذا العنصر مفقودًا أو في مكان خاطئ)
+                             (GDestroyNotify)NULL,     // 9: GDestroyNotify child_setup_data_destroy
                              -1,                       // 10: int timeout
                              NULL,                     // 11: GCancellable *cancellable
                              (VteTerminalSpawnAsyncCallback)NULL, // 12: VteTerminalSpawnAsyncCallback callback
@@ -309,6 +325,7 @@ static void on_apply_preferences_clicked(GtkButton *button, gpointer user_data) 
         g_settings_set_double(settings, "opacity", new_opacity);
     }
 
+    // Casting correctly to HelwanTerminalWindow* using the generated macro
     HelwanTerminalWindow *window = HELWAN_TERMINAL_WINDOW(gtk_window_get_transient_for(GTK_WINDOW(dialog)));
     if (window) {
         // Apply font to all VTE instances
