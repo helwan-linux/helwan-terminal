@@ -185,13 +185,19 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
     }
     // *******************************************************
 
-    vte_terminal_spawn_sync(VTE_TERMINAL(vte),
-                            VTE_PTY_DEFAULT,
-                            NULL, // working directory
-                            spawn_command, // الأمر الذي سيتم تنفيذه
-                            NULL, // environment
-                            0, // spawn flags
-                            NULL, NULL, NULL, NULL, NULL);
+    // ***** التعديل هنا لاستخدام vte_terminal_spawn_async *****
+    vte_terminal_spawn_async(VTE_TERMINAL(vte),
+                             VTE_PTY_DEFAULT,
+                             NULL, // working directory
+                             spawn_command, // الأمر الذي سيتم تنفيذه
+                             NULL, // environment
+                             G_SPAWN_DEFAULT, // Flags for spawning. G_SPAWN_DEFAULT is usually fine.
+                             NULL, // child setup function
+                             NULL, // child setup data
+                             NULL, // cancellable
+                             NULL, // callback function (NULL if not needed)
+                             NULL); // callback data (NULL if not needed)
+    // *************************************************************
 
     // Apply the current font settings to the new terminal from cached string
     PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
