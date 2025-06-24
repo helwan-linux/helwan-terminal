@@ -224,7 +224,8 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
 // دالة مساعدة لتطبيق الشفافية مباشرة عند تحريك المزلاج
 static void on_opacity_scale_value_changed(GtkRange *range, HelwanTerminalWindow *window) {
     double new_opacity = gtk_range_get_value(range);
-    gtk_window_set_opacity(GTK_WINDOW(window), new_opacity);
+    // تم التعديل: استخدام gtk_widget_set_opacity بدلاً من gtk_window_set_opacity
+    gtk_widget_set_opacity(GTK_WIDGET(window), new_opacity);
 }
 
 // Callback for applying preferences
@@ -320,8 +321,8 @@ static void on_apply_preferences_clicked(GtkButton *button, gpointer user_data) 
             gtk_window_resize(GTK_WINDOW(window), new_width, new_height);
         }
 
-        // Apply opacity (يتم تطبيقه هنا أيضًا عند الضغط على Apply/OK لحفظ القيمة)
-        gtk_window_set_opacity(GTK_WINDOW(window), new_opacity);
+        // تم التعديل: استخدام gtk_widget_set_opacity بدلاً من gtk_window_set_opacity
+        gtk_widget_set_opacity(GTK_WIDGET(window), new_opacity);
     }
 }
 
@@ -482,7 +483,8 @@ GtkWidget *create_terminal_window(gint argc, char * const *argv) {
                                                 NULL);
 
     gtk_widget_set_app_paintable(GTK_WIDGET(window), TRUE);
-    gtk_window_set_opacity(GTK_WINDOW(window), initial_opacity);
+    // تم التعديل: استخدام gtk_widget_set_opacity بدلاً من gtk_window_set_opacity
+    gtk_widget_set_opacity(GTK_WIDGET(window), initial_opacity);
 
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
