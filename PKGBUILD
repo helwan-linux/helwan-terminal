@@ -11,33 +11,23 @@ license=('GPL3') # تأكد من أن ترخيص مشروعك هو GPL3
 depends=('gtk3' 'vte3' 'glib2') # التبعيات الأساسية لتشغيل hel-terminal
 makedepends=('meson' 'ninja' 'git') # التبعيات اللازمة للبناء، أضفنا git لأننا نستخدم git clone
 
-# المصدر: نستخدم git clone لسحب المستودع بالكامل.
-# makepkg يقوم باستنساخ المستودع إلى مجلد باسم 'helwan-terminal' (اسم الريبو).
 source=("git+${url}.git")
 sha256sums=('SKIP') # استخدم 'SKIP' لأول مرة. بعد أول بناء ناجح، سيُعطيك makepkg مجموع التحقق الصحيح. قم بتحديث هذا السطر به لزيادة الأمان.
 
 build() {
-  # الدخول إلى المجلد الرئيسي للمستودع الذي تم استنساخه.
   cd "helwan-terminal"
-  
-  # ثم الدخول إلى المجلد الفرعي "helwan-terminal" حيث يوجد ملف 'meson.build' فعلياً.
   cd "helwan-terminal" 
   
-  # تكوين Meson.
   meson setup build . --prefix=/usr --reconfigure
-  
-  # بناء المشروع باستخدام Ninja.
   ninja -C build
 }
 
 package() {
-  # الدخول إلى المجلد الرئيسي للمستودع الذي تم استنساخه.
+  cd "helwan-terminal"
   cd "helwan-terminal"
   
-  # ثم الدخول إلى المجلد الفرعي "helwan-terminal".
-  cd "helwan-terminal"
-  
-  # تثبيت المشروع داخل pkgdir (وهو مجلد مؤقت يتم فيه تجميع ملفات الحزمة).
-  # ****** التعديل هنا: DESTDIR قبل الأمر مباشرة ******
   DESTDIR="${pkgdir}" ninja -C build install
+
+  # هذا السطر يضمن تثبيت الملف التنفيذي لـ hel-terminal في المسار الصحيح /usr/bin/
+  install -Dm755 build/helwan-terminal "${pkgdir}/usr/bin/hel-terminal"
 }
