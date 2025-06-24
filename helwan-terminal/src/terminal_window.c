@@ -188,17 +188,17 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
     // ***** التعديل هنا لاستخدام vte_terminal_spawn_async وتصحيح ترتيب الوسيطات *****
     vte_terminal_spawn_async(VTE_TERMINAL(vte),
                              VTE_PTY_DEFAULT,
-                             NULL, // working directory
-                             spawn_command, // الأمر الذي سيتم تنفيذه
-                             NULL, // environment
-                             G_SPAWN_DEFAULT, // Flags for spawning. G_SPAWN_DEFAULT is usually fine.
-                             NULL, // child setup function
-                             NULL, // child setup data
-                             NULL, // cancellable
-                             NULL, // callback (NULL if not monitoring child exit)
-                             NULL, // user_data for callback (NULL if no callback)
-                             -1,   // timeout (use -1 for no timeout)
-                             NULL); // GDestroyNotify for user_data (NULL if user_data is NULL)
+                             NULL, // working directory (arg 3)
+                             spawn_command, // argv (arg 4)
+                             NULL, // envp (arg 5)
+                             G_SPAWN_DEFAULT, // spawn_flags (arg 6)
+                             NULL, // child_setup_func (arg 7)
+                             NULL, // child_setup_data (arg 8)
+                             NULL, // cancellable (arg 9)
+                             NULL, // VteTerminalSpawnAsyncCallback callback (arg 10)
+                             NULL, // gpointer user_data (arg 11)
+                             -1,   // int timeout (arg 12)
+                             NULL); // GDestroyNotify destroy_notify (arg 13)
     // *************************************************************
 
     // Apply the current font settings to the new terminal from cached string
