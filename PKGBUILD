@@ -11,34 +11,33 @@ license=('GPL3') # تأكد من أن ترخيص مشروعك هو GPL3
 depends=('gtk3' 'vte3' 'glib2') # التبعيات الأساسية لتشغيل hel-terminal
 makedepends=('meson' 'ninja' 'git') # التبعيات اللازمة للبناء، أضفنا git لأننا نستخدم git clone
 
-# المصدر: نستخدم git clone لسحب المستودع بالكامل
-# ملاحظة: سنقوم بسحب المستودع ثم الانتقال إلى المجلد الفرعي 'helwan-terminal'
+# المصدر: نستخدم git clone لسحب المستودع بالكامل.
+# makepkg يقوم باستنساخ المستودع إلى مجلد باسم 'helwan-terminal' (اسم الريبو).
 source=("git+${url}.git")
-sha256sums=('SKIP') # استخدم 'SKIP' لأول مرة، ثم استبدلها بمجموع التحقق الفعلي بعد البناء الناجح
+sha256sums=('SKIP') # استخدم 'SKIP' لأول مرة. بعد أول بناء ناجح، سيُعطيك makepkg مجموع التحقق الصحيح. قم بتحديث هذا السطر به لزيادة الأمان.
 
 build() {
-  # الانتقال إلى المجلد الذي تم استنساخه (عادةً يكون اسم المستودع)
-  # ثم الانتقال إلى المجلد الفرعي الذي يحتوي على ملفات المشروع
-  cd "${pkgname}" # أو يمكنك استخدام cd "helwan-terminal" إذا كنت تفضل الاسم الثابت للمجلد المستنسخ
-  cd helwan-terminal # هذا هو المجلد الفرعي الذي ذكرته
+  # الدخول إلى المجلد الرئيسي للمستودع الذي تم استنساخه.
+  cd "helwan-terminal"
   
-  # تكوين Meson
-  meson setup build --prefix=/usr
+  # ثم الدخول إلى المجلد الفرعي "helwan-terminal" حيث يوجد ملف 'meson.build' فعلياً.
+  cd "helwan-terminal" 
   
-  # بناء المشروع باستخدام Ninja
+  # تكوين Meson.
+  meson setup build . --prefix=/usr --reconfigure
+  
+  # بناء المشروع باستخدام Ninja.
   ninja -C build
 }
 
 package() {
-  # الانتقال إلى المجلد الذي تم استنساخه والمجلد الفرعي
-  cd "${pkgname}"
-  cd helwan-terminal
-
-  # تثبيت المشروع داخل pkgdir (وهو المجلد المؤقت الذي يتم فيه تجميع الحزمة)
-  ninja -C build install DESTDIR="${pkgdir}"
-
-  # بعد التثبيت، يجب التأكد من أن الـ gschema يتم تجميعه وتثبيته.
-  # عادةً ما يقوم 'ninja install' بتشغيل 'glib-compile-schemas' بعد تثبيت الـ schema XML.
-  # ولكن لضمان ذلك، يمكنك إضافة هذا السطر إذا واجهت مشاكل لاحقًا (لكنه ليس ضروريًا عادةً لـ PKGBUILD):
-  # glib-compile-schemas "${pkgdir}/usr/share/glib-2.0/schemas/"
+  # الدخول إلى المجلد الرئيسي للمستودع الذي تم استنساخه.
+  cd "helwan-terminal"
+  
+  # ثم الدخول إلى المجلد الفرعي "helwan-terminal".
+  cd "helwan-terminal"
+  
+  # تثبيت المشروع داخل pkgdir (وهو مجلد مؤقت يتم فيه تجميع ملفات الحزمة).
+  # ****** التعديل هنا: DESTDIR قبل الأمر مباشرة ******
+  DESTDIR="${pkgdir}" ninja -C build install
 }
