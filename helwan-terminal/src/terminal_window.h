@@ -2,17 +2,13 @@
 #define HELWAN_TERMINAL_WINDOW_H
 
 #include <gtk/gtk.h>
-#include <vte/vte.h> // Include VTE header for VteTerminal type
+#include <gobject/gobject.h> // Explicitly include gobject for G_DECLARE_FINAL_TYPE
+#include <vte/vte.h>         // Include VTE header for VteTerminal type
 
-// G_DECLARE_FINAL_TYPE declares boilerplate functions, including the casting macros
-// This should be used in the header for custom types defined with G_DEFINE_TYPE
+// G_DECLARE_FINAL_TYPE generates the necessary type registration functions
+// and casting macros (like HELWAN_TERMINAL_WINDOW) automatically.
+// This macro also handles the forward declaration and basic structure definition.
 G_DECLARE_FINAL_TYPE(HelwanTerminalWindow, helwan_terminal_window, HELWAN, TERMINAL_WINDOW, GTK_TYPE_WINDOW)
-
-// Define the structure for your custom window (already declared by G_DECLARE_FINAL_TYPE, but good for clarity)
-struct _HelwanTerminalWindow {
-    GtkWindow parent_instance;
-    GtkWidget *notebook; // Added for managing tabs
-};
 
 // Function to create a new instance of your custom window
 GtkWidget *create_terminal_window(gint argc, char * const *argv);
