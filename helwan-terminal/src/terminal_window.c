@@ -453,10 +453,10 @@ static void on_about_button_clicked(GtkButton *button, HelwanTerminalWindow *win
     gtk_show_about_dialog(GTK_WINDOW(window),
                           "program-name", "Helwan Terminal",
                           "version", "0.1.0", // رقم الإصدارة
-                          "copyright", "© 2025 Helwan University", // حقوق الملكية
-                          "comments", "A powerful terminal emulator developed at Helwan University.", // معلومات إضافية
-                          "website", "https://github.com/YourGitHubUser/helwan-terminal", // رابط المشروع (يمكنك تغييره)
-                          "authors", (const char *[]){"Your Name", "Another Author (optional)", NULL}, // أسماء المطورين
+                          "copyright", "© 2025 Helwan Linux", // حقوق الملكية
+                          "comments", "A powerful terminal emulator developed at Helwan Linux.", // معلومات إضافية
+                          "website", "https://github.com/helwan-linux/helwan-terminal", // رابط المشروع (يمكنك تغييره)
+                          "authors", (const char *[]){"Saeed Badrelden", "Another Author (optional)", NULL}, // أسماء المطورين
                           "license-type", GTK_LICENSE_GPL_3_0,
                           "logo-icon-name", "helwan-terminal", // اسم الأيقونة التي سيتم تثبيتها
                           NULL);
