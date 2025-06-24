@@ -1,0 +1,6 @@
+# List of files installed by Meson
+# Does not contain files installed by custom scripts.
+/usr/bin/helwan-terminal
+/usr/share/glib-2.0/schemas/helwan-terminal.gschema.xml
+/usr/share/applications/helwan-terminal.desktop
+/usr/share/icons/hicolor/64x64/apps/helwan-terminal.png

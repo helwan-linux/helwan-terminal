@@ -1,0 +1,103 @@
+[
+  {
+    "name": "helwan-terminal",
+    "id": "helwan-terminal@exe",
+    "type": "executable",
+    "defined_in": "/home/sma/Desktop/ter-proj/helwan-terminal/meson.build",
+    "filename": [
+      "/home/sma/Desktop/ter-proj/helwan-terminal/build/helwan-terminal"
+    ],
+    "build_by_default": true,
+    "target_sources": [
+      {
+        "language": "c",
+        "machine": "host",
+        "compiler": [
+          "cc"
+        ],
+        "parameters": [
+          "-I/home/sma/Desktop/ter-proj/helwan-terminal/build/helwan-terminal.p",
+          "-I/home/sma/Desktop/ter-proj/helwan-terminal/build",
+          "-I/home/sma/Desktop/ter-proj/helwan-terminal",
+          "-I/usr/include/gtk-3.0",
+          "-I/usr/include/pango-1.0",
+          "-I/usr/include/cloudproviders",
+          "-I/usr/include/cairo",
+          "-I/usr/include/gdk-pixbuf-2.0",
+          "-I/usr/include/at-spi2-atk/2.0",
+          "-I/usr/include/at-spi-2.0",
+          "-I/usr/include/atk-1.0",
+          "-I/usr/include/dbus-1.0",
+          "-I/usr/lib/dbus-1.0/include",
+          "-I/usr/include/fribidi",
+          "-I/usr/include/pixman-1",
+          "-I/usr/include/harfbuzz",
+          "-I/usr/include/freetype2",
+          "-I/usr/include/libpng16",
+          "-I/usr/include/gio-unix-2.0",
+          "-I/usr/include/glib-2.0",
+          "-I/usr/lib/glib-2.0/include",
+          "-I/usr/include/libmount",
+          "-I/usr/include/blkid",
+          "-I/usr/include/sysprof-6",
+          "-I/usr/include/vte-2.91",
+          "-fdiagnostics-color=always",
+          "-D_FILE_OFFSET_BITS=64",
+          "-Wall",
+          "-Winvalid-pch",
+          "-Wextra",
+          "-std=gnu11",
+          "-O0",
+          "-g",
+          "-pthread"
+        ],
+        "sources": [
+          "/home/sma/Desktop/ter-proj/helwan-terminal/src/main.c",
+          "/home/sma/Desktop/ter-proj/helwan-terminal/src/terminal_window.c"
+        ],
+        "generated_sources": [],
+        "unity_sources": []
+      },
+      {
+        "linker": [
+          "cc"
+        ],
+        "parameters": [
+          "-Wl,--as-needed",
+          "-Wl,--no-undefined",
+          "-Wl,--start-group",
+          "-Wl,--start-group",
+          "/usr/lib/libgtk-3.so",
+          "/usr/lib/libgdk-3.so",
+          "/usr/lib/libz.so",
+          "/usr/lib/libpangocairo-1.0.so",
+          "/usr/lib/libcairo-gobject.so",
+          "/usr/lib/libgdk_pixbuf-2.0.so",
+          "/usr/lib/libatk-1.0.so",
+          "/usr/lib/libpango-1.0.so",
+          "/usr/lib/libcairo.so",
+          "/usr/lib/libharfbuzz.so",
+          "/usr/lib/libgio-2.0.so",
+          "/usr/lib/libgobject-2.0.so",
+          "/usr/lib/libglib-2.0.so",
+          "/usr/lib/libvte-2.91.so",
+          "-Wl,--end-group",
+          "-Wl,--end-group"
+        ]
+      }
+    ],
+    "extra_files": [],
+    "subproject": null,
+    "dependencies": [
+      "gtk+-3.0",
+      "vte-2.91",
+      "gio-unix-2.0"
+    ],
+    "depends": [],
+    "win_subsystem": "console",
+    "installed": true,
+    "install_filename": [
+      "/usr/bin/helwan-terminal"
+    ]
+  }
+]

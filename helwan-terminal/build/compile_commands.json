@@ -1,0 +1,14 @@
+[
+  {
+    "directory": "/home/sma/Desktop/ter-proj/helwan-terminal/build",
+    "command": "cc -Ihelwan-terminal.p -I. -I.. -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=gnu11 -O0 -g -pthread -MD -MQ helwan-terminal.p/src_main.c.o -MF helwan-terminal.p/src_main.c.o.d -o helwan-terminal.p/src_main.c.o -c ../src/main.c",
+    "file": "../src/main.c",
+    "output": "helwan-terminal.p/src_main.c.o"
+  },
+  {
+    "directory": "/home/sma/Desktop/ter-proj/helwan-terminal/build",
+    "command": "cc -Ihelwan-terminal.p -I. -I.. -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=gnu11 -O0 -g -pthread -MD -MQ helwan-terminal.p/src_terminal_window.c.o -MF helwan-terminal.p/src_terminal_window.c.o.d -o helwan-terminal.p/src_terminal_window.c.o -c ../src/terminal_window.c",
+    "file": "../src/terminal_window.c",
+    "output": "helwan-terminal.p/src_terminal_window.c.o"
+  }
+]

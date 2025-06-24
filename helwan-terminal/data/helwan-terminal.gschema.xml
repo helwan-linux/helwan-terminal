@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.helwan_terminal.gschema" path="/org/helwan_terminal/gschema/">
+    <key name="font-family" type="s">
+      <default>"monospace 10"</default>
+      <summary>Terminal Font Family and Size</summary>
+      <description>Sets the font family and size for the terminal.</description>
+    </key>
+    <key name="window-width" type="i">
+      <default>800</default>
+      <summary>Default Window Width</summary>
+      <description>Sets the default width of the terminal window.</description>
+    </key>
+    <key name="window-height" type="i">
+      <default>600</default>
+      <summary>Default Window Height</summary>
+      <description>Sets the default height of the terminal window.</description>
+    </key>
+    <key name="opacity" type="d">
+      <default>0.85</default>
+      <summary>Terminal Window Opacity</summary>
+      <description>Sets the opacity level of the terminal window (0.0 for fully transparent, 1.0 for fully opaque).</description>
+    </key>
+  </schema>
+</schemalist>

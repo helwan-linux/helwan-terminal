@@ -1,0 +1,27 @@
+{
+  "targets": {
+    "/home/sma/Desktop/ter-proj/helwan-terminal/build/helwan-terminal": {
+      "destination": "{bindir}/helwan-terminal",
+      "tag": "runtime",
+      "subproject": null,
+      "install_rpath": null
+    }
+  },
+  "data": {
+    "/home/sma/Desktop/ter-proj/helwan-terminal/data/helwan-terminal.gschema.xml": {
+      "destination": "{datadir}/glib-2.0/schemas/helwan-terminal.gschema.xml",
+      "tag": null,
+      "subproject": null
+    },
+    "/home/sma/Desktop/ter-proj/helwan-terminal/data/helwan-terminal.desktop": {
+      "destination": "{datadir}/applications/helwan-terminal.desktop",
+      "tag": null,
+      "subproject": null
+    },
+    "/home/sma/Desktop/ter-proj/helwan-terminal/data/icons/hicolor/64x64/apps/helwan-terminal.png": {
+      "destination": "{datadir}/icons/hicolor/64x64/apps/helwan-terminal.png",
+      "tag": null,
+      "subproject": null
+    }
+  }
+}
