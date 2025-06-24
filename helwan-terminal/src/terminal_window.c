@@ -2,11 +2,9 @@
 #include <vte/vte.h>
 #include <gtk/gtk.h>
 #include <pango/pangocairo.h>
-#include <stdlib.h> // For strtol, g_strfreev
-#include <stdio.h>  // For snprintf
-#include <string.h> // For strcmp
-#include <glib/gstdio.h> // For g_strtod (safer than atof)
+#include <stdlib.h> // For atoi
 #include <gio/gio.h> // For GSettings
+#include <string.h> // For strcmp
 
 // Define our custom window type
 G_DEFINE_TYPE(HelwanTerminalWindow, helwan_terminal_window, GTK_TYPE_WINDOW);
@@ -28,10 +26,6 @@ static gchar *cached_font_string = NULL; // To store "Font Family Size" string f
 // Function to apply font settings to a VTE terminal
 static void apply_font_settings(VteTerminal *terminal, const char *font_family, double font_size) {
     PangoFontDescription *font_desc = pango_font_description_from_string(font_family);
-    if (!font_desc) { // Add NULL check
-        g_warning("Failed to create font description from family: %s", font_family);
-        return;
-    }
     pango_font_description_set_size(font_desc, font_size * PANGO_SCALE);
     vte_terminal_set_font(terminal, font_desc);
     pango_font_description_free(font_desc);
@@ -44,12 +38,14 @@ static gboolean on_terminal_key_press(GtkWidget *widget, GdkEventKey *event, Hel
     // Check for Ctrl+Shift+C (Copy)
     if ((event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) == (GDK_CONTROL_MASK | GDK_SHIFT_MASK) &&
         event->keyval == GDK_KEY_C) {
+        // Updated to non-deprecated function
         vte_terminal_copy_clipboard_format(VTE_TERMINAL(widget), VTE_FORMAT_TEXT);
         return TRUE;
     }
     // Check for Ctrl+Shift+V (Paste)
     else if ((event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) == (GDK_CONTROL_MASK | GDK_SHIFT_MASK) &&
              event->keyval == GDK_KEY_V) {
+        // Updated to use gtk_clipboard_wait_for_text for GTK3
         GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
         gchar *text = gtk_clipboard_wait_for_text(clipboard);
         if (text) {
@@ -61,50 +57,59 @@ static gboolean on_terminal_key_press(GtkWidget *widget, GdkEventKey *event, Hel
     // Check for Ctrl++ (Zoom In) - Try both GDK_KEY_equal (for '+') and GDK_KEY_plus
     else if ((event->state & GDK_CONTROL_MASK) && (event->keyval == GDK_KEY_plus || event->keyval == GDK_KEY_equal)) {
         PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
-        if (!temp_font_desc) return FALSE; // Add NULL check
         double current_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
-        gchar *current_font_family = g_strdup(pango_font_description_get_family(temp_font_desc));
+        gchar *current_font_family = g_strdup(pango_font_description_get_family(temp_font_desc)); // Get current family
         pango_font_description_free(temp_font_desc);
 
         current_font_size += 1.0;
 
-        g_free(cached_font_string);
+        g_free(cached_font_string); // Free old string
+        // Create new font string from extracted family and new size
         cached_font_string = g_strdup_printf("%s %g", current_font_family, current_font_size);
-        
-        apply_font_settings(VTE_TERMINAL(widget), current_font_family, current_font_size);
-        g_free(current_font_family);
+        g_free(current_font_family); // Free family string
+
+        // Apply font settings to the current terminal
+        PangoFontDescription *new_font_desc_for_apply = pango_font_description_from_string(cached_font_string);
+        double new_applied_size = (double)pango_font_description_get_size(new_font_desc_for_apply) / PANGO_SCALE;
+        gchar *new_applied_family = g_strdup(pango_font_description_get_family(new_font_desc_for_apply));
+        pango_font_description_free(new_font_desc_for_apply);
+        apply_font_settings(VTE_TERMINAL(widget), new_applied_family, new_applied_size);
+        g_free(new_applied_family);
 
         return TRUE;
     }
     // Check for Ctrl+- (Zoom Out) - Try both GDK_KEY_minus and GDK_KEY_underscore (for '-')
     else if ((event->state & GDK_CONTROL_MASK) && (event->keyval == GDK_KEY_minus || event->keyval == GDK_KEY_underscore)) {
         PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
-        if (!temp_font_desc) return FALSE; // Add NULL check
         double current_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
-        gchar *current_font_family = g_strdup(pango_font_description_get_family(temp_font_desc));
+        gchar *current_font_family = g_strdup(pango_font_description_get_family(temp_font_desc)); // Get current family
         pango_font_description_free(temp_font_desc);
 
         if (current_font_size > 1.0) {
             current_font_size -= 1.0;
-            g_free(cached_font_string);
+            g_free(cached_font_string); // Free old string
+            // Create new font string from extracted family and new size
             cached_font_string = g_strdup_printf("%s %g", current_font_family, current_font_size);
             
-            apply_font_settings(VTE_TERMINAL(widget), current_font_family, current_font_size);
+            // Apply font settings to the current terminal
+            PangoFontDescription *new_font_desc_for_apply = pango_font_description_from_string(cached_font_string);
+            double new_applied_size = (double)pango_font_description_get_size(new_font_desc_for_apply) / PANGO_SCALE;
+            gchar *new_applied_family = g_strdup(pango_font_description_get_family(new_font_desc_for_apply));
+            pango_font_description_free(new_font_desc_for_apply);
+            apply_font_settings(VTE_TERMINAL(widget), new_applied_family, new_applied_size);
+            g_free(new_applied_family);
         }
-        g_free(current_font_family);
+        g_free(current_font_family); // Free family string
         return TRUE;
     }
     // Check for Ctrl+0 (Reset Zoom)
     else if ((event->state & GDK_CONTROL_MASK) && event->keyval == GDK_KEY_0) {
         g_free(cached_font_string);
         cached_font_string = g_strdup("monospace 10"); // Reset to default string
-        
         PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
-        if (!temp_font_desc) return FALSE; // Add NULL check
         double reset_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
         gchar *reset_font_family = g_strdup(pango_font_description_get_family(temp_font_desc));
         pango_font_description_free(temp_font_desc);
-        
         apply_font_settings(VTE_TERMINAL(widget), reset_font_family, reset_font_size);
         g_free(reset_font_family);
         return TRUE;
@@ -116,7 +121,7 @@ static gboolean on_terminal_key_press(GtkWidget *widget, GdkEventKey *event, Hel
 // Callback for "Copy" menu item
 static void on_copy_menu_item_activated(GtkMenuItem *menu_item, VteTerminal *terminal) {
     (void)menu_item;
-    vte_terminal_copy_clipboard_format(terminal, VTE_FORMAT_TEXT);
+    vte_terminal_copy_clipboard_format(terminal, VTE_FORMAT_TEXT); // Updated to non-deprecated function
 }
 
 // Callback for "Paste" menu item
@@ -125,7 +130,7 @@ static void on_paste_menu_item_activated(GtkMenuItem *menu_item, VteTerminal *te
     GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     gchar *text = gtk_clipboard_wait_for_text(clipboard);
     if (text) {
-        vte_terminal_paste_text(VTE_TERMINAL(terminal), text); // Changed widget to terminal for consistency
+        vte_terminal_paste_text(terminal, text);
         g_free(text);
     }
 }
@@ -149,13 +154,13 @@ static gboolean on_terminal_button_press(GtkWidget *widget, GdkEventButton *even
         if (!vte_terminal_get_has_selection(terminal)) {
             gtk_widget_set_sensitive(copy_item, FALSE);
         }
-        
+        // Use gtk_clipboard_wait_for_text to check for clipboard content in GTK3
         GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
         gchar *clipboard_text = gtk_clipboard_wait_for_text(clipboard);
         if (!clipboard_text) {
              gtk_widget_set_sensitive(paste_item, FALSE);
         } else {
-            g_free(clipboard_text);
+            g_free(clipboard_text); // Free the text after checking
         }
         
         gtk_widget_show_all(menu);
@@ -184,70 +189,42 @@ static void on_tab_close_button_clicked(GtkButton *button, GtkWidget *vte_widget
 GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * const *command_to_execute) {
     GtkWidget *vte = vte_terminal_new();
 
-    char **envp = g_get_environ(); // Get current environment variables
-
-    char * const *final_argv;
-    gchar *full_command_str = NULL; // To manage memory for the combined command string
-
+    char **spawn_command;
     if (command_to_execute && command_to_execute[0] != NULL) {
-        // Construct the command string: "exec your_program_path args ; exec /bin/bash"
-        // g_strjoinv safely joins array elements with spaces
-        gchar *joined_command_parts = g_strjoinv(" ", (char**)command_to_execute);
-        full_command_str = g_strdup_printf("exec %s ; exec /bin/bash", joined_command_parts);
-        g_free(joined_command_parts); // Free the temporary joined string
-
-        // Prepare argv for sh -c
-        // This is the standard way to execute a full command string via a shell
-        // Note: argv_sh_c must be a static or globally scoped array for vte_terminal_spawn_async
-        // or allocated dynamically and freed later. Using a local const char* array is safe here.
-        static char *argv_sh_c[4]; // Needs to be static or dynamically allocated for spawn_async
-        argv_sh_c[0] = "/bin/sh";
-        argv_sh_c[1] = "-c";
-        argv_sh_c[2] = full_command_str;
-        argv_sh_c[3] = NULL;
-        final_argv = argv_sh_c;
+        spawn_command = (char **)command_to_execute; // Casting to char**
     } else {
-        // If no command is passed, just run /bin/bash
-        static char *default_shell[] = {"/bin/bash", NULL}; // Static for safety with spawn_async
-        final_argv = default_shell;
+        // Use a local, non-const array for the default command
+        char *default_command[] = {"/bin/bash", NULL};
+        spawn_command = default_command;
     }
 
     vte_terminal_spawn_async(VTE_TERMINAL(vte),        // 1: VteTerminal *terminal
                              VTE_PTY_DEFAULT,          // 2: VtePtyFlags pty_flags
                              NULL,                     // 3: const char *working_directory
-                             final_argv,               // 4: char **argv - use final_argv here
-                             envp,                     // 5: char **envv
-                             G_SPAWN_SEARCH_PATH | G_SPAWN_CHILD_INHERITS_STDIN, // 6: GSpawnFlags spawn_flags
+                             spawn_command,            // 4: char **argv
+                             NULL,                     // 5: char **envv
+                             G_SPAWN_DEFAULT,          // 6: GSpawnFlags spawn_flags
                              NULL,                     // 7: GSpawnChildSetupFunc child_setup
                              NULL,                     // 8: gpointer child_setup_data
-                             (GDestroyNotify)g_strfreev, // 9: GDestroyNotify child_setup_data_destroy
+                             (GDestroyNotify)NULL,     // 9: GDestroyNotify child_setup_data_destroy
                              -1,                       // 10: int timeout
                              NULL,                     // 11: GCancellable *cancellable
                              (VteTerminalSpawnAsyncCallback)NULL, // 12: VteTerminalSpawnAsyncCallback callback
                              (gpointer)NULL);          // 13: gpointer user_data
 
-    // Free the memory allocated for full_command_str if it was used
-    if (full_command_str) {
-        g_free(full_command_str);
-    }
-
     // Add a reasonable initial size to the VTE terminal
+    // This explicitly tells the VTE widget (and thus the PTY) its dimensions.
+    // It's a common workaround if the shell doesn't receive proper dimensions automatically.
     vte_terminal_set_size(VTE_TERMINAL(vte), 80, 24); // 80 columns, 24 rows - standard default
 
     // Apply the current font settings to the new terminal from cached string
     PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
-    if (temp_font_desc) { // Add NULL check
-        double applied_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
-        gchar *applied_font_family = g_strdup(pango_font_description_get_family(temp_font_desc));
-        pango_font_description_free(temp_font_desc);
+    double applied_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
+    gchar *applied_font_family = g_strdup(pango_font_description_get_family(temp_font_desc));
+    pango_font_description_free(temp_font_desc);
 
-        apply_font_settings(VTE_TERMINAL(vte), applied_font_family, applied_font_size);
-        g_free(applied_font_family);
-    } else {
-        g_warning("Failed to create font description for new terminal from cached string: %s", cached_font_string);
-        // Fallback to a default font if cached_font_string is invalid
-        apply_font_settings(VTE_TERMINAL(vte), "monospace", 10.0);
-    }
+    apply_font_settings(VTE_TERMINAL(vte), applied_font_family, applied_font_size);
+    g_free(applied_font_family);
 
     g_signal_connect(vte, "key-press-event", G_CALLBACK(on_terminal_key_press), self);
     g_signal_connect(vte, "button-press-event", G_CALLBACK(on_terminal_button_press), vte);
@@ -270,9 +247,10 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
     return vte;
 }
 
-// Helper function to apply opacity directly when scale value changes
+// دالة مساعدة لتطبيق الشفافية مباشرة عند تحريك المزلاج
 static void on_opacity_scale_value_changed(GtkRange *range, HelwanTerminalWindow *window) {
     double new_opacity = gtk_range_get_value(range);
+    // تم التعديل: استخدام gtk_widget_set_opacity بدلاً من gtk_window_set_opacity
     gtk_widget_set_opacity(GTK_WIDGET(window), new_opacity);
 }
 
@@ -296,70 +274,58 @@ static void on_apply_preferences_clicked(GtkButton *button, gpointer user_data) 
 
     // Font
     GtkWidget *font_chooser_widget = gtk_grid_get_child_at(GTK_GRID(grid), 1, 0);
-    if (font_chooser_widget && GTK_IS_FONT_CHOOSER(font_chooser_widget)) {
-        PangoFontDescription *font_desc = gtk_font_chooser_get_font_desc(GTK_FONT_CHOOSER(font_chooser_widget));
-        gchar *new_font_string = NULL;
-        if (font_desc) {
-            new_font_string = pango_font_description_to_string(font_desc);
-            pango_font_description_free(font_desc);
-            if (settings) {
-                g_settings_set_string(settings, "font-family", new_font_string);
-            }
-            g_free(cached_font_string);
-            cached_font_string = g_strdup(new_font_string);
-            g_free(new_font_string);
-        }
-    } else {
+    if (!font_chooser_widget || !GTK_IS_FONT_CHOOSER(font_chooser_widget)) {
         g_warning("Could not get font chooser widget or it's not a GtkFontChooser.");
+        return;
+    }
+    PangoFontDescription *font_desc = gtk_font_chooser_get_font_desc(GTK_FONT_CHOOSER(font_chooser_widget));
+
+    gchar *new_font_string = NULL;
+    if (font_desc) {
+        new_font_string = pango_font_description_to_string(font_desc);
+        pango_font_description_free(font_desc);
+        if (settings) {
+            g_settings_set_string(settings, "font-family", new_font_string);
+        }
+        g_free(cached_font_string);
+        cached_font_string = g_strdup(new_font_string);
+        g_free(new_font_string);
     }
 
     // Window Width
     GtkWidget *width_entry = gtk_grid_get_child_at(GTK_GRID(grid), 1, 1);
-    if (width_entry && GTK_IS_ENTRY(width_entry)) {
-        const char *width_text = gtk_entry_get_text(GTK_ENTRY(width_entry));
-        char *endptr;
-        long new_width_long = strtol(width_text, &endptr, 10);
-        if (endptr == width_text || *endptr != '\0' || new_width_long <= 0) {
-            g_warning("Invalid width entered: %s. Keeping previous value.", width_text);
-        } else {
-            int new_width = (int)new_width_long;
-            if (settings) {
-                g_settings_set_int(settings, "window-width", new_width);
-            }
-        }
-    } else {
+    if (!width_entry || !GTK_IS_ENTRY(width_entry)) {
         g_warning("Could not get width entry widget or it's not a GtkEntry.");
+        return;
+    }
+    int new_width = atoi(gtk_entry_get_text(GTK_ENTRY(width_entry)));
+    if (settings) {
+        g_settings_set_int(settings, "window-width", new_width);
     }
 
     // Window Height
     GtkWidget *height_entry = gtk_grid_get_child_at(GTK_GRID(grid), 1, 2);
-    if (height_entry && GTK_IS_ENTRY(height_entry)) {
-        const char *height_text = gtk_entry_get_text(GTK_ENTRY(height_entry));
-        char *endptr;
-        long new_height_long = strtol(height_text, &endptr, 10);
-        if (endptr == height_text || *endptr != '\0' || new_height_long <= 0) {
-            g_warning("Invalid height entered: %s. Keeping previous value.", height_text);
-        } else {
-            int new_height = (int)new_height_long;
-            if (settings) {
-                g_settings_set_int(settings, "window-height", new_height);
-            }
-        }
-    } else {
+    if (!height_entry || !GTK_IS_ENTRY(height_entry)) {
         g_warning("Could not get height entry widget or it's not a GtkEntry.");
+        return;
+    }
+    int new_height = atoi(gtk_entry_get_text(GTK_ENTRY(height_entry)));
+    if (settings) {
+        g_settings_set_int(settings, "window-height", new_height);
     }
 
     // Opacity
-    GtkWidget *opacity_scale = gtk_grid_get_child_at(GTK_GRID(grid), 1, 3);
-    if (opacity_scale && GTK_IS_SCALE(opacity_scale)) {
-        double new_opacity = gtk_range_get_value(GTK_RANGE(opacity_scale));
-        if (settings) {
-            g_settings_set_double(settings, "opacity", new_opacity);
-        }
-    } else {
+    GtkWidget *opacity_scale = gtk_grid_get_child_at(GTK_GRID(grid), 1, 3); // الصف الجديد للشفافية
+    if (!opacity_scale || !GTK_IS_SCALE(opacity_scale)) {
         g_warning("Could not get opacity scale widget or it's not a GtkScale.");
+        return;
+    }
+    double new_opacity = gtk_range_get_value(GTK_RANGE(opacity_scale));
+    if (settings) {
+        g_settings_set_double(settings, "opacity", new_opacity);
     }
 
+    // Casting correctly to HelwanTerminalWindow* using the generated macro
     HelwanTerminalWindow *window = HELWAN_TERMINAL_WINDOW(gtk_window_get_transient_for(GTK_WINDOW(dialog)));
     if (window) {
         // Apply font to all VTE instances
@@ -368,45 +334,131 @@ static void on_apply_preferences_clicked(GtkButton *button, gpointer user_data) 
             GtkWidget *vte_widget = gtk_notebook_get_nth_page(GTK_NOTEBOOK(window->notebook), i);
             if (VTE_IS_TERMINAL(vte_widget)) {
                 PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
-                if (temp_font_desc) { // Add NULL check
-                    double applied_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
-                    gchar *applied_font_family = g_strdup(pango_font_description_get_family(temp_font_desc));
-                    pango_font_description_free(temp_font_desc);
+                double applied_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
+                gchar *applied_font_family = g_strdup(pango_font_description_get_family(temp_font_desc));
+                pango_font_description_free(temp_font_desc);
 
-                    apply_font_settings(VTE_TERMINAL(vte_widget), applied_font_family, applied_font_size);
-                    g_free(applied_font_family);
-                } else {
-                    g_warning("Failed to create font description for VTE instance from cached string: %s", cached_font_string);
-                }
+                apply_font_settings(VTE_TERMINAL(vte_widget), applied_font_family, applied_font_size);
+                g_free(applied_font_family);
             }
         }
 
         // Apply window size
-        int current_width = g_settings_get_int(settings, "window-width");
-        int current_height = g_settings_get_int(settings, "window-height");
-        if (current_width > 0 && current_height > 0) {
-            gtk_window_resize(GTK_WINDOW(window), current_width, current_height);
+        if (new_width > 0 && new_height > 0) {
+            gtk_window_resize(GTK_WINDOW(window), new_width, new_height);
         }
 
-        // Apply opacity
-        double current_opacity = g_settings_get_double(settings, "opacity");
-        gtk_widget_set_opacity(GTK_WIDGET(window), current_opacity);
+        // تم التعديل: استخدام gtk_widget_set_opacity بدلاً من gtk_window_set_opacity
+        gtk_widget_set_opacity(GTK_WIDGET(window), new_opacity);
     }
+}
+
+// Function to create the preferences dialog
+static void create_preferences_dialog(HelwanTerminalWindow *window) {
+    GtkWidget *dialog = gtk_dialog_new_with_buttons("Preferences",
+                                                    GTK_WINDOW(window),
+                                                    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                                    "Cancel", GTK_RESPONSE_CANCEL,
+                                                    "Apply", GTK_RESPONSE_APPLY,
+                                                    "Ok", GTK_RESPONSE_OK,
+                                                    NULL);
+
+    GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget *grid = gtk_grid_new();
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 10);
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 10);
+    gtk_container_set_border_width(GTK_CONTAINER(grid), 10);
+    gtk_box_pack_start(GTK_BOX(content_area), grid, TRUE, TRUE, 0);
+
+    // Font selection (Row 0)
+    GtkWidget *font_label = gtk_label_new("Font:");
+    gtk_grid_attach(GTK_GRID(grid), font_label, 0, 0, 1, 1);
+    GtkWidget *font_chooser_widget = gtk_font_chooser_widget_new();
+    gtk_grid_attach(GTK_GRID(grid), font_chooser_widget, 1, 0, 1, 1);
+
+    gchar *font_from_settings = NULL;
+    if (settings) {
+        font_from_settings = g_settings_get_string(settings, "font-family");
+    }
+    if (!font_from_settings) {
+        font_from_settings = g_strdup("monospace 10");
+    }
+    PangoFontDescription *initial_font_desc = pango_font_description_from_string(font_from_settings);
+    gtk_font_chooser_set_font_desc(GTK_FONT_CHOOSER(font_chooser_widget), initial_font_desc);
+    pango_font_description_free(initial_font_desc);
+    g_free(font_from_settings);
+
+    // Window Width
+    GtkWidget *width_label = gtk_label_new("Window Width:");
+    gtk_grid_attach(GTK_GRID(grid), width_label, 0, 1, 1, 1);
+    GtkWidget *width_entry = gtk_entry_new();
+    gint initial_width = 800;
+    if (settings) {
+        initial_width = g_settings_get_int(settings, "window-width");
+    }
+    gtk_entry_set_text(GTK_ENTRY(width_entry), g_strdup_printf("%d", initial_width));
+    gtk_grid_attach(GTK_GRID(grid), width_entry, 1, 1, 1, 1);
+
+    // Window Height
+    GtkWidget *height_label = gtk_label_new("Window Height:");
+    gtk_grid_attach(GTK_GRID(grid), height_label, 0, 2, 1, 1);
+    GtkWidget *height_entry = gtk_entry_new();
+    gint initial_height = 600;
+    if (settings) {
+        initial_height = g_settings_get_int(settings, "window-height");
+    }
+    gtk_entry_set_text(GTK_ENTRY(height_entry), g_strdup_printf("%d", initial_height));
+    gtk_grid_attach(GTK_GRID(grid), height_entry, 1, 2, 1, 1);
+
+    // Opacity control (Row 3)
+    GtkWidget *opacity_label = gtk_label_new("Opacity:");
+    gtk_grid_attach(GTK_GRID(grid), opacity_label, 0, 3, 1, 1);
+    
+    GtkAdjustment *adjustment = gtk_adjustment_new(0.85, 0.0, 1.0, 0.01, 0.1, 0.0);
+    GtkWidget *opacity_scale = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, adjustment);
+    gtk_range_set_fill_level(GTK_RANGE(opacity_scale), 1.0); // Show fill up to 1.0
+    gtk_scale_set_digits(GTK_SCALE(opacity_scale), 2); // Show 2 decimal places
+
+    if (settings) {
+        gtk_adjustment_set_value(adjustment, g_settings_get_double(settings, "opacity"));
+    }
+    gtk_grid_attach(GTK_GRID(grid), opacity_scale, 1, 3, 1, 1);
+
+    // ربط المزلاج بدالة تحديث الشفافية الفورية
+    g_signal_connect(opacity_scale, "value-changed", G_CALLBACK(on_opacity_scale_value_changed), window);
+
+    gtk_widget_show_all(dialog);
+
+    gint response;
+    do {
+        response = gtk_dialog_run(GTK_DIALOG(dialog));
+
+        if (response == GTK_RESPONSE_APPLY) {
+            on_apply_preferences_clicked(NULL, dialog);
+        } else if (response == GTK_RESPONSE_OK) {
+            on_apply_preferences_clicked(NULL, dialog);
+            break;
+        } else if (response == GTK_RESPONSE_CANCEL) {
+            break;
+        }
+    } while (TRUE);
+
+    gtk_widget_destroy(dialog);
 }
 
 // Function to show the About Dialog (as a separate button action)
 static void on_about_button_clicked(GtkButton *button, HelwanTerminalWindow *window) {
-    (void)button;
+    (void)button; // Unused parameter
 
     gtk_show_about_dialog(GTK_WINDOW(window),
                           "program-name", "Helwan Terminal",
-                          "version", "0.1.0",
-                          "copyright", "© 2025 Helwan University",
-                          "comments", "A powerful terminal emulator developed at Helwan University.",
-                          "website", "https://github.com/YourGitHubUser/helwan-terminal",
-                          "authors", (const char *[]){"Your Name", "Another Author (optional)", NULL},
+                          "version", "0.1.0", // رقم الإصدارة
+                          "copyright", "© 2025 Helwan University", // حقوق الملكية
+                          "comments", "A powerful terminal emulator developed at Helwan University.", // معلومات إضافية
+                          "website", "https://github.com/YourGitHubUser/helwan-terminal", // رابط المشروع (يمكنك تغييره)
+                          "authors", (const char *[]){"Your Name", "Another Author (optional)", NULL}, // أسماء المطورين
                           "license-type", GTK_LICENSE_GPL_3_0,
-                          "logo-icon-name", "helwan-terminal",
+                          "logo-icon-name", "helwan-terminal", // اسم الأيقونة التي سيتم تثبيتها
                           NULL);
 }
 
@@ -420,6 +472,7 @@ static void on_preferences_button_clicked(GtkButton *button, HelwanTerminalWindo
 // Callback for the "New Tab" button
 static void on_new_tab_button_clicked(GtkButton *button, HelwanTerminalWindow *window) {
     (void)button;
+    // عند فتح tab جديد من زر "New Tab"، لا يوجد أمر خارجي، لذا نمرر NULL
     helwan_terminal_window_new_tab(window, NULL);
     gtk_notebook_set_current_page(GTK_NOTEBOOK(window->notebook), gtk_notebook_get_n_pages(GTK_NOTEBOOK(window->notebook)) - 1);
 }
@@ -446,15 +499,8 @@ GtkWidget *create_terminal_window(gint argc, char * const *argv) {
     }
 
     // Create an instance of our custom window type
-    gint initial_window_width = 800; // Default value
-    gint initial_window_height = 600; // Default value
-    if (settings) {
-        initial_window_width = g_settings_get_int(settings, "window-width");
-        initial_window_height = g_settings_get_int(settings, "window-height");
-        // Ensure values are valid (greater than zero)
-        if (initial_window_width <= 0) initial_window_width = 800;
-        if (initial_window_height <= 0) initial_window_height = 600;
-    }
+    gint initial_window_width = g_settings_get_int(settings, "window-width");
+    gint initial_window_height = g_settings_get_int(settings, "window-height");
 
     HelwanTerminalWindow *window = g_object_new(helwan_terminal_window_get_type(),
                                                 "title", "Helwan Terminal",
@@ -469,22 +515,22 @@ GtkWidget *create_terminal_window(gint argc, char * const *argv) {
 
     GtkWidget *header_bar = gtk_header_bar_new();
     gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(header_bar), TRUE);
-    gtk_header_bar_set_title(GTK_HEADER_BAR(header_bar), "Helwan Terminal");
+    gtk_header_bar_set_title(GTK_HEADER_BAR(header_bar), "Helwan Terminal"); // عنوان النافذة الرئيسي
     gtk_window_set_titlebar(GTK_WINDOW(window), header_bar);
 
-    // "New Tab" button
+    // زر "New Tab"
     GtkWidget *new_tab_button = gtk_button_new_from_icon_name("list-add-symbolic", GTK_ICON_SIZE_SMALL_TOOLBAR);
     gtk_button_set_relief(GTK_BUTTON(new_tab_button), GTK_RELIEF_NONE);
     g_signal_connect(new_tab_button, "clicked", G_CALLBACK(on_new_tab_button_clicked), window);
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header_bar), new_tab_button);
 
-    // "Preferences" button
+    // زر "Preferences"
     GtkWidget *settings_button = gtk_button_new_from_icon_name("preferences-system-symbolic", GTK_ICON_SIZE_SMALL_TOOLBAR);
     gtk_button_set_relief(GTK_BUTTON(settings_button), GTK_RELIEF_NONE);
     g_signal_connect(settings_button, "clicked", G_CALLBACK(on_preferences_button_clicked), window);
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header_bar), settings_button);
 
-    // "About" button
+    // زر "About" الجديد والمستقل
     GtkWidget *about_button = gtk_button_new_from_icon_name("help-about-symbolic", GTK_ICON_SIZE_SMALL_TOOLBAR);
     gtk_button_set_relief(GTK_BUTTON(about_button), GTK_RELIEF_NONE);
     g_signal_connect(about_button, "clicked", G_CALLBACK(on_about_button_clicked), window);
@@ -501,22 +547,22 @@ GtkWidget *create_terminal_window(gint argc, char * const *argv) {
     gtk_box_pack_start(GTK_BOX(vbox), window->notebook, TRUE, TRUE, 0);
 
     char * const *command_for_first_tab = NULL;
-    if (argc > 1) { // If there are arguments after the program name
-        if (strcmp(argv[1], "-e") == 0) { // If the second argument is "-e"
-            if (argc > 2) { // And there's a command after "-e"
-                // The command to execute starts from argv[2]
+    if (argc > 1) { // لو فيه أي arguments بعد اسم البرنامج
+        if (strcmp(argv[1], "-e") == 0) { // لو الـ argument التاني هو "-e"
+            if (argc > 2) { // ولو فيه أمر بعد "-e"
+                // يبقى الأمر اللي عايز يتنفذ بيبدأ من argv[2]
                 command_for_first_tab = &argv[2];
             } else {
-                // If "-e" exists but no command after it, open regular bash
+                // لو "-e" موجود ومفيش أمر بعده، نفتح bash عادي
                 command_for_first_tab = NULL;
             }
         } else {
-            // If the first argument is not "-e", consider all arguments as a single command
+            // لو أول argument مش "-e"، يبقى بنعتبر كل الـ arguments أمر واحد
             command_for_first_tab = &argv[1];
         }
     }
     
-    // Open the first tab with the command found (or NULL if none)
+    // نفتح أول tab بالـ command اللي لقيناه (أو بـ NULL لو مفيش)
     helwan_terminal_window_new_tab(window, command_for_first_tab);
     
     return GTK_WIDGET(window);
