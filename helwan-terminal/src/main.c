@@ -1,18 +1,12 @@
 #include <gtk/gtk.h>
-#include <vte/vte.h>
-#include "terminal_window.h"
+#include "terminal_window.h" // عشان يتعرف على create_terminal_window
 
 int main(int argc, char *argv[]) {
-    // Initialize GTK
-    gtk_init(&argc, &argv);
+    gtk_init(&argc, &argv); // لازم تعمل init للـ GTK وتمررله argc و argv
 
-    // Create a new terminal window
-    GtkWidget *window = create_terminal_window();
+    GtkWidget *window = create_terminal_window(argc, argv); // ****** لازم تعدل السطر ده ******
 
-    // Show all widgets
     gtk_widget_show_all(window);
-
-    // Start the GTK main loop
     gtk_main();
 
     return 0;
