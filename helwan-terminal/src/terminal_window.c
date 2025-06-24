@@ -4,6 +4,7 @@
 #include <pango/pangocairo.h>
 #include <stdlib.h> // For atoi
 #include <gio/gio.h> // For GSettings
+#include <string.h> // For strcmp
 
 // Define our custom window type
 G_DEFINE_TYPE(HelwanTerminalWindow, helwan_terminal_window, GTK_TYPE_WINDOW);
@@ -61,7 +62,6 @@ static gboolean on_terminal_key_press(GtkWidget *widget, GdkEventKey *event, Hel
         g_free(current_font_family); // Free family string
 
         // Apply font settings to the current terminal
-        // We need to re-parse cached_font_string to get the correct family and size for apply_font_settings
         PangoFontDescription *new_font_desc_for_apply = pango_font_description_from_string(cached_font_string);
         double new_applied_size = (double)pango_font_description_get_size(new_font_desc_for_apply) / PANGO_SCALE;
         gchar *new_applied_family = g_strdup(pango_font_description_get_family(new_font_desc_for_apply));
@@ -170,18 +170,25 @@ static void on_tab_close_button_clicked(GtkButton *button, GtkWidget *vte_widget
 }
 
 // Function to create a new terminal tab
-GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self) {
+// تم تعديل هذه الدالة لتستقبل أمر للتنفيذ (أو NULL للـ shell العادي)
+GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * const *command_to_execute) {
     GtkWidget *vte = vte_terminal_new();
 
-    // السطر الخاص بالشفافية التي لم تعمل سابقًا (تم إزالته)
-    // g_object_set(vte, "enable-right-click-transparency", TRUE, NULL);
+    char * const *spawn_command;
+    if (command_to_execute && command_to_execute[0] != NULL) {
+        // إذا تم تمرير أمر، استخدمه
+        spawn_command = command_to_execute;
+    } else {
+        // وإلا، استخدم bash افتراضيًا
+        spawn_command = (char * const []){"/bin/bash", NULL};
+    }
 
     vte_terminal_spawn_sync(VTE_TERMINAL(vte),
                             VTE_PTY_DEFAULT,
-                            NULL,
-                            (char * const []){"/bin/bash", NULL},
-                            NULL,
-                            0,
+                            NULL, // working directory
+                            spawn_command, // الأمر الذي سيتم تنفيذه
+                            NULL, // environment
+                            0, // spawn flags
                             NULL, NULL, NULL, NULL, NULL);
 
     // Apply the current font settings to the new terminal from cached string
@@ -437,12 +444,14 @@ static void on_preferences_button_clicked(GtkButton *button, HelwanTerminalWindo
 // Callback for the "New Tab" button
 static void on_new_tab_button_clicked(GtkButton *button, HelwanTerminalWindow *window) {
     (void)button;
-    helwan_terminal_window_new_tab(window);
+    // عند فتح tab جديد من زر "New Tab"، لا يوجد أمر خارجي، لذا نمرر NULL
+    helwan_terminal_window_new_tab(window, NULL);
     gtk_notebook_set_current_page(GTK_NOTEBOOK(window->notebook), gtk_notebook_get_n_pages(GTK_NOTEBOOK(window->notebook)) - 1);
 }
 
 // Function to create the main terminal window
-GtkWidget *create_terminal_window() {
+// ****** تم تعديل هذه الدالة لاستقبال argc و argv ******
+GtkWidget *create_terminal_window(gint argc, char * const *argv) {
     // Initialize GSettings for our schema
     if (!settings) {
         settings = g_settings_new("org.helwan_terminal.gschema");
@@ -472,7 +481,6 @@ GtkWidget *create_terminal_window() {
                                                 "default-height", initial_window_height,
                                                 NULL);
 
-    // تمكين الشفافية وتعيين القيمة الأولية من GSettings
     gtk_widget_set_app_paintable(GTK_WIDGET(window), TRUE);
     gtk_window_set_opacity(GTK_WINDOW(window), initial_opacity);
 
@@ -511,7 +519,28 @@ GtkWidget *create_terminal_window() {
 
     gtk_box_pack_start(GTK_BOX(vbox), window->notebook, TRUE, TRUE, 0);
 
-    helwan_terminal_window_new_tab(window);
+    // ****** هنا الجزء الجديد والمهم ******
+    // نحتاج نمرر الأمر لو موجود، أو NULL لو مش موجود.
+    // هندور على "-e" في الـ arguments عشان نعرف لو فيه أمر عايز يتنفذ.
+    char * const *command_for_first_tab = NULL;
+    if (argc > 1) { // لو فيه أي arguments بعد اسم البرنامج
+        if (strcmp(argv[1], "-e") == 0) { // لو الـ argument التاني هو "-e"
+            if (argc > 2) { // ولو فيه أمر بعد "-e"
+                // يبقى الأمر اللي عايز يتنفذ بيبدأ من argv[2]
+                command_for_first_tab = &argv[2];
+            } else {
+                // لو "-e" موجود ومفيش أمر بعده، نفتح bash عادي
+                command_for_first_tab = NULL;
+            }
+        } else {
+            // لو أول argument مش "-e"، يبقى بنعتبر كل الـ arguments أمر واحد
+            command_for_first_tab = &argv[1];
+        }
+    }
+    
+    // نفتح أول tab بالـ command اللي لقيناه (أو بـ NULL لو مفيش)
+    helwan_terminal_window_new_tab(window, command_for_first_tab);
+    // *************************************************************
     
     return GTK_WIDGET(window);
 }
