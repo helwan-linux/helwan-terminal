@@ -185,20 +185,20 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
     }
     // *******************************************************
 
-    // ***** التعديل هنا لاستخدام vte_terminal_spawn_async وتصحيح ترتيب الوسيطات *****
-    vte_terminal_spawn_async(VTE_TERMINAL(vte),
-                             VTE_PTY_DEFAULT,
-                             NULL, // working directory (arg 3)
-                             spawn_command, // argv (arg 4)
-                             NULL, // envp (arg 5)
-                             G_SPAWN_DEFAULT, // spawn_flags (arg 6)
-                             NULL, // child_setup_func (arg 7)
-                             NULL, // child_setup_data (arg 8)
-                             NULL, // cancellable (arg 9)
-                             NULL, // VteTerminalSpawnAsyncCallback callback (arg 10)
-                             NULL, // gpointer user_data (arg 11)
-                             -1,   // int timeout (arg 12)
-                             NULL); // GDestroyNotify destroy_notify (arg 13)
+    // ***** التعديل هنا لاستخدام vte_terminal_spawn_async وتصحيح ترتيب الوسيطات بدقة بناءً على الأخطاء التي ظهرت *****
+    vte_terminal_spawn_async(VTE_TERMINAL(vte),        // 1: VteTerminal *terminal
+                             VTE_PTY_DEFAULT,          // 2: VtePtyFlags pty_flags
+                             NULL,                     // 3: const char *working_directory
+                             spawn_command,            // 4: char **argv
+                             NULL,                     // 5: char **envp
+                             G_SPAWN_DEFAULT,          // 6: GSpawnFlags spawn_flags
+                             NULL,                     // 7: GSpawnChildSetupFunc child_setup_func
+                             NULL,                     // 8: gpointer child_setup_data
+                             NULL,                     // 9: GCancellable *cancellable
+                             -1,                       // 10: int timeout (هذا بناءً على رسالة الخطأ)
+                             (VteTerminalSpawnAsyncCallback)NULL, // 11: callback (VteTerminalSpawnAsyncCallback)
+                             (gpointer)NULL,           // 12: user_data (gpointer)
+                             (GDestroyNotify)NULL);    // 13: destroy_notify (GDestroyNotify)
     // *************************************************************
 
     // Apply the current font settings to the new terminal from cached string
