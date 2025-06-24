@@ -185,7 +185,7 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
     }
     // *******************************************************
 
-    // ***** التعديل هنا لاستخدام vte_terminal_spawn_async *****
+    // ***** التعديل هنا لاستخدام vte_terminal_spawn_async وإضافة الوسيطات الناقصة *****
     vte_terminal_spawn_async(VTE_TERMINAL(vte),
                              VTE_PTY_DEFAULT,
                              NULL, // working directory
@@ -196,7 +196,9 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
                              NULL, // child setup data
                              NULL, // cancellable
                              NULL, // callback function (NULL if not needed)
-                             NULL); // callback data (NULL if not needed)
+                             NULL, // callback data (NULL if not needed)
+                             -1,   // timeout (use -1 for no timeout)
+                             NULL); // GDestroyNotify for command_to_execute (NULL since it's managed elsewhere or not dynamic)
     // *************************************************************
 
     // Apply the current font settings to the new terminal from cached string
