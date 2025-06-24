@@ -212,6 +212,11 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
                              (VteTerminalSpawnAsyncCallback)NULL, // 12: VteTerminalSpawnAsyncCallback callback
                              (gpointer)NULL);          // 13: gpointer user_data
 
+    // Add a reasonable initial size to the VTE terminal
+    // This explicitly tells the VTE widget (and thus the PTY) its dimensions.
+    // It's a common workaround if the shell doesn't receive proper dimensions automatically.
+    vte_terminal_set_size(VTE_TERMINAL(vte), 80, 24); // 80 columns, 24 rows - standard default
+
     // Apply the current font settings to the new terminal from cached string
     PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
     double applied_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
@@ -384,37 +389,40 @@ static void create_preferences_dialog(HelwanTerminalWindow *window) {
     g_free(font_from_settings);
 
     // Window Width
-    GtkWidget *width_entry = gtk_grid_get_child_at(GTK_GRID(grid), 1, 1);
-    if (!width_entry || !GTK_IS_ENTRY(width_entry)) {
-        g_warning("Could not get width entry widget or it's not a GtkEntry.");
-        return;
-    }
-    int new_width = atoi(gtk_entry_get_text(GTK_ENTRY(width_entry)));
+    GtkWidget *width_label = gtk_label_new("Window Width:");
+    gtk_grid_attach(GTK_GRID(grid), width_label, 0, 1, 1, 1);
+    GtkWidget *width_entry = gtk_entry_new();
+    gint initial_width = 800;
     if (settings) {
-        g_settings_set_int(settings, "window-width", new_width);
+        initial_width = g_settings_get_int(settings, "window-width");
     }
+    gtk_entry_set_text(GTK_ENTRY(width_entry), g_strdup_printf("%d", initial_width));
+    gtk_grid_attach(GTK_GRID(grid), width_entry, 1, 1, 1, 1);
 
     // Window Height
-    GtkWidget *height_entry = gtk_grid_get_child_at(GTK_GRID(grid), 1, 2);
-    if (!height_entry || !GTK_IS_ENTRY(height_entry)) {
-        g_warning("Could not get height entry widget or it's not a GtkEntry.");
-        return;
-    }
-    int new_height = atoi(gtk_entry_get_text(GTK_ENTRY(height_entry)));
+    GtkWidget *height_label = gtk_label_new("Window Height:");
+    gtk_grid_attach(GTK_GRID(grid), height_label, 0, 2, 1, 1);
+    GtkWidget *height_entry = gtk_entry_new();
+    gint initial_height = 600;
     if (settings) {
-        g_settings_set_int(settings, "window-height", new_height);
+        initial_height = g_settings_get_int(settings, "window-height");
     }
+    gtk_entry_set_text(GTK_ENTRY(height_entry), g_strdup_printf("%d", initial_height));
+    gtk_grid_attach(GTK_GRID(grid), height_entry, 1, 2, 1, 1);
 
-    // Opacity
-    GtkWidget *opacity_scale = gtk_grid_get_child_at(GTK_GRID(grid), 1, 3); // الصف الجديد للشفافية
-    if (!opacity_scale || !GTK_IS_SCALE(opacity_scale)) {
-        g_warning("Could not get opacity scale widget or it's not a GtkScale.");
-        return;
-    }
-    double new_opacity = gtk_range_get_value(GTK_RANGE(opacity_scale));
+    // Opacity control (Row 3)
+    GtkWidget *opacity_label = gtk_label_new("Opacity:");
+    gtk_grid_attach(GTK_GRID(grid), opacity_label, 0, 3, 1, 1);
+    
+    GtkAdjustment *adjustment = gtk_adjustment_new(0.85, 0.0, 1.0, 0.01, 0.1, 0.0);
+    GtkWidget *opacity_scale = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, adjustment);
+    gtk_range_set_fill_level(GTK_RANGE(opacity_scale), 1.0); // Show fill up to 1.0
+    gtk_scale_set_digits(GTK_SCALE(opacity_scale), 2); // Show 2 decimal places
+
     if (settings) {
-        g_settings_set_double(settings, "opacity", new_opacity);
+        gtk_adjustment_set_value(adjustment, g_settings_get_double(settings, "opacity"));
     }
+    gtk_grid_attach(GTK_GRID(grid), opacity_scale, 1, 3, 1, 1);
 
     // ربط المزلاج بدالة تحديث الشفافية الفورية
     g_signal_connect(opacity_scale, "value-changed", G_CALLBACK(on_opacity_scale_value_changed), window);
