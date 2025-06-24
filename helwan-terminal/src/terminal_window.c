@@ -174,14 +174,16 @@ static void on_tab_close_button_clicked(GtkButton *button, GtkWidget *vte_widget
 GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * const *command_to_execute) {
     GtkWidget *vte = vte_terminal_new();
 
-    char * const *spawn_command;
+    // ***** التعديلات هنا لحل مشكلة "discarded-qualifiers" *****
+    char **spawn_command;
     if (command_to_execute && command_to_execute[0] != NULL) {
-        // إذا تم تمرير أمر، استخدمه
-        spawn_command = command_to_execute;
+        spawn_command = (char **)command_to_execute; // Casting to char**
     } else {
-        // وإلا، استخدم bash افتراضيًا
-        spawn_command = (char * const []){"/bin/bash", NULL};
+        // Use a local, non-const array for the default command
+        char *default_command[] = {"/bin/bash", NULL};
+        spawn_command = default_command;
     }
+    // *******************************************************
 
     vte_terminal_spawn_sync(VTE_TERMINAL(vte),
                             VTE_PTY_DEFAULT,
