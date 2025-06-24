@@ -542,6 +542,7 @@ GtkWidget *create_terminal_window(gint argc, char * const *argv) {
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_container_add(GTK_CONTAINER(window), vbox);
 
+    // يتم هنا الوصول إلى عضو 'notebook' بعد أن أصبح الهيكل كاملاً
     window->notebook = gtk_notebook_new();
     gtk_notebook_set_scrollable(GTK_NOTEBOOK(window->notebook), TRUE);
     gtk_notebook_set_tab_pos(GTK_NOTEBOOK(window->notebook), GTK_POS_TOP);
