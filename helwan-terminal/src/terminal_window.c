@@ -1,4 +1,4 @@
-#include "terminal_window.h"
+#include "terminal_window.h" // يجب أن يكون هذا التضمين أولاً لضمان تعريف G_DECLARE_FINAL_TYPE
 #include <vte/vte.h>
 #include <gtk/gtk.h>
 #include <pango/pangocairo.h>
