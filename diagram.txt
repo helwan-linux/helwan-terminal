@@ -1,0 +1,60 @@
+helwan-terminal/
+📁 helwan-terminal/
+├── 📄 LICENSE
+├── 📄 README.md
+├── 📁 build
+│   ├── 📄 build.ninja
+│   ├── 📄 compile_commands.json
+│   ├── 📄 helwan-terminal
+│   ├── 📁 helwan-terminal.p
+│   │   ├── 📄 src_main.c.o
+│   │   └── 📄 src_terminal_window.c.o
+│   ├── 📁 meson-info
+│   │   ├── 📄 intro-benchmarks.json
+│   │   ├── 📄 intro-buildoptions.json
+│   │   ├── 📄 intro-buildsystem_files.json
+│   │   ├── 📄 intro-compilers.json
+│   │   ├── 📄 intro-dependencies.json
+│   │   ├── 📄 intro-install_plan.json
+│   │   ├── 📄 intro-installed.json
+│   │   ├── 📄 intro-machines.json
+│   │   ├── 📄 intro-projectinfo.json
+│   │   ├── 📄 intro-targets.json
+│   │   ├── 📄 intro-tests.json
+│   │   └── 📄 meson-info.json
+│   ├── 📁 meson-logs
+│   │   ├── 📄 install-log.txt
+│   │   └── 📄 meson-log.txt
+│   └── 📁 meson-private
+│       ├── 📄 build.dat
+│       ├── 📄 cmd_line.txt
+│       ├── 📄 coredata.dat
+│       ├── 📄 coredata.dat.prev
+│       ├── 📄 install.dat
+│       ├── 📄 meson.lock
+│       ├── 📄 meson_benchmark_setup.dat
+│       ├── 📄 meson_test_setup.dat
+│       ├── 📄 sanitycheckc.c
+│       └── 📄 sanitycheckc.exe
+├── 📁 data
+│   ├── 📄 helwan-terminal.desktop
+│   ├── 📄 helwan-terminal.gschema.xml
+│   └── 📁 icons
+│       └── 📁 hicolor
+│           └── 📁 64x64
+│               └── 📁 apps
+│                   └── 📄 helwan-terminal.png
+├── 📄 meson.build
+└── 📁 src
+    ├── 📄 config_manager.c
+    ├── 📄 config_manager.h
+    ├── 📄 main.c
+    ├── 📄 main.h
+    ├── 📄 shortcuts.c
+    ├── 📄 shortcuts.h
+    ├── 📄 terminal_tab.c
+    ├── 📄 terminal_tab.h
+    ├── 📄 terminal_window.c
+    ├── 📄 terminal_window.h
+    ├── 📄 utils.c
+    └── 📄 utils.h
