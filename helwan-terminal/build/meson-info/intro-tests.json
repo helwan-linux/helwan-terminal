@@ -1,1 +1,21 @@
-[]
+[
+  {
+    "cmd": [
+      "/home/mo/Downloads/helwan-terminal/helwan-terminal/build/test_utils"
+    ],
+    "env": {},
+    "name": "utils",
+    "workdir": null,
+    "timeout": 30,
+    "suite": [
+      "helwan-terminal"
+    ],
+    "is_parallel": true,
+    "priority": 0,
+    "protocol": "exitcode",
+    "depends": [
+      "test_utils@exe"
+    ],
+    "extra_paths": []
+  }
+]

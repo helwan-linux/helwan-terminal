@@ -27,6 +27,7 @@
       "vs2017",
       "vs2019",
       "vs2022",
+      "vs2026",
       "xcode",
       "none"
     ],
@@ -39,7 +40,8 @@
     "section": "core",
     "machine": "any",
     "choices": [
-      "vs2022"
+      "vs2022",
+      "vs2026"
     ],
     "type": "combo",
     "description": "Setup multiple buildtype-suffixed ninja-backend build directories, and a [builddir]_vs containing a Visual Studio meta-backend with multiple configurations that calls into them"
@@ -223,6 +225,14 @@
     "description": "Activate Visual Studio environment"
   },
   {
+    "name": "os2_emxomf",
+    "value": false,
+    "section": "core",
+    "machine": "any",
+    "type": "boolean",
+    "description": "Use OMF format on OS/2"
+  },
+  {
     "name": "pkgconfig.relocatable",
     "value": false,
     "section": "core",
@@ -277,6 +287,14 @@
     "description": "Whether to allow use of the Python Limited API"
   },
   {
+    "name": "python.build_config",
+    "value": "",
+    "section": "core",
+    "machine": "any",
+    "type": "string",
+    "description": "Config file containing the build details for the target Python installation."
+  },
+  {
     "name": "pkg_config_path",
     "value": [],
     "section": "core",
@@ -301,35 +319,6 @@
     "description": "Maximum number of linker processes to run or 0 for no limit"
   },
   {
-    "name": "b_asneeded",
-    "value": true,
-    "section": "base",
-    "machine": "any",
-    "type": "boolean",
-    "description": "Use -Wl,--as-needed when linking"
-  },
-  {
-    "name": "b_ndebug",
-    "value": "false",
-    "section": "base",
-    "machine": "any",
-    "choices": [
-      "true",
-      "false",
-      "if-release"
-    ],
-    "type": "combo",
-    "description": "Disable asserts"
-  },
-  {
-    "name": "b_sanitize",
-    "value": [],
-    "section": "base",
-    "machine": "any",
-    "type": "array",
-    "description": "Code sanitizer to use"
-  },
-  {
     "name": "b_lto",
     "value": false,
     "section": "base",
@@ -338,12 +327,12 @@
     "description": "Use link time optimization"
   },
   {
-    "name": "b_staticpic",
-    "value": true,
+    "name": "b_lto_threads",
+    "value": 0,
     "section": "base",
     "machine": "any",
-    "type": "boolean",
-    "description": "Build static libraries as position independent"
+    "type": "integer",
+    "description": "Use multiple threads for Link Time Optimization"
   },
   {
     "name": "b_colorout",
@@ -359,20 +348,49 @@
     "description": "Use colored output"
   },
   {
+    "name": "b_coverage",
+    "value": false,
+    "section": "base",
+    "machine": "any",
+    "type": "boolean",
+    "description": "Enable coverage tracking."
+  },
+  {
+    "name": "b_ndebug",
+    "value": "false",
+    "section": "base",
+    "machine": "any",
+    "choices": [
+      "true",
+      "false",
+      "if-release"
+    ],
+    "type": "combo",
+    "description": "Disable asserts"
+  },
+  {
+    "name": "b_pie",
+    "value": false,
+    "section": "base",
+    "machine": "any",
+    "type": "boolean",
+    "description": "Build executables as position independent"
+  },
+  {
+    "name": "b_sanitize",
+    "value": [],
+    "section": "base",
+    "machine": "any",
+    "type": "array",
+    "description": "Code sanitizer to use"
+  },
+  {
     "name": "b_pch",
     "value": true,
     "section": "base",
     "machine": "any",
     "type": "boolean",
     "description": "Use precompiled headers"
-  },
-  {
-    "name": "b_lto_threads",
-    "value": 0,
-    "section": "base",
-    "machine": "any",
-    "type": "integer",
-    "description": "Use multiple threads for Link Time Optimization"
   },
   {
     "name": "b_pgo",
@@ -388,6 +406,22 @@
     "description": "Use profile guided optimization"
   },
   {
+    "name": "b_thinlto_cache_dir",
+    "value": "",
+    "section": "base",
+    "machine": "any",
+    "type": "string",
+    "description": "Directory to store ThinLTO cache objects"
+  },
+  {
+    "name": "b_asneeded",
+    "value": true,
+    "section": "base",
+    "machine": "any",
+    "type": "boolean",
+    "description": "Use -Wl,--as-needed when linking"
+  },
+  {
     "name": "b_lundef",
     "value": true,
     "section": "base",
@@ -396,20 +430,20 @@
     "description": "Use -Wl,--no-undefined when linking"
   },
   {
-    "name": "b_pie",
-    "value": false,
+    "name": "b_staticpic",
+    "value": true,
     "section": "base",
     "machine": "any",
     "type": "boolean",
-    "description": "Build executables as position independent"
+    "description": "Build static libraries as position independent"
   },
   {
-    "name": "b_coverage",
+    "name": "b_thinlto_cache",
     "value": false,
     "section": "base",
     "machine": "any",
     "type": "boolean",
-    "description": "Enable coverage tracking."
+    "description": "Use LLVM ThinLTO caching for faster incremental builds"
   },
   {
     "name": "c_args",
@@ -429,7 +463,7 @@
   },
   {
     "name": "c_std",
-    "value": "gnu11",
+    "value": "c11",
     "section": "compiler",
     "machine": "host",
     "choices": [
@@ -456,7 +490,7 @@
   },
   {
     "name": "prefix",
-    "value": "/usr",
+    "value": "/usr/local",
     "section": "directory",
     "machine": "any",
     "type": "string",

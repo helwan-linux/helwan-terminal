@@ -1,14 +1,56 @@
 [
   {
-    "directory": "/home/sma/Desktop/ter-proj/helwan-terminal/build",
-    "command": "cc -Ihelwan-terminal.p -I. -I.. -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=gnu11 -O0 -g -pthread -MD -MQ helwan-terminal.p/src_main.c.o -MF helwan-terminal.p/src_main.c.o.d -o helwan-terminal.p/src_main.c.o -c ../src/main.c",
+    "directory": "/home/mo/Downloads/helwan-terminal/helwan-terminal/build",
+    "command": "cc -Ihelwan-terminal.p -I. -I.. -I../include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread -MD -MQ helwan-terminal.p/src_main.c.o -MF helwan-terminal.p/src_main.c.o.d -o helwan-terminal.p/src_main.c.o -c ../src/main.c",
     "file": "../src/main.c",
     "output": "helwan-terminal.p/src_main.c.o"
   },
   {
-    "directory": "/home/sma/Desktop/ter-proj/helwan-terminal/build",
-    "command": "cc -Ihelwan-terminal.p -I. -I.. -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=gnu11 -O0 -g -pthread -MD -MQ helwan-terminal.p/src_terminal_window.c.o -MF helwan-terminal.p/src_terminal_window.c.o.d -o helwan-terminal.p/src_terminal_window.c.o -c ../src/terminal_window.c",
+    "directory": "/home/mo/Downloads/helwan-terminal/helwan-terminal/build",
+    "command": "cc -Ihelwan-terminal.p -I. -I.. -I../include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread -MD -MQ helwan-terminal.p/src_config.c.o -MF helwan-terminal.p/src_config.c.o.d -o helwan-terminal.p/src_config.c.o -c ../src/config.c",
+    "file": "../src/config.c",
+    "output": "helwan-terminal.p/src_config.c.o"
+  },
+  {
+    "directory": "/home/mo/Downloads/helwan-terminal/helwan-terminal/build",
+    "command": "cc -Ihelwan-terminal.p -I. -I.. -I../include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread -MD -MQ helwan-terminal.p/src_utils.c.o -MF helwan-terminal.p/src_utils.c.o.d -o helwan-terminal.p/src_utils.c.o -c ../src/utils.c",
+    "file": "../src/utils.c",
+    "output": "helwan-terminal.p/src_utils.c.o"
+  },
+  {
+    "directory": "/home/mo/Downloads/helwan-terminal/helwan-terminal/build",
+    "command": "cc -Ihelwan-terminal.p -I. -I.. -I../include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread -MD -MQ helwan-terminal.p/src_shortcuts.c.o -MF helwan-terminal.p/src_shortcuts.c.o.d -o helwan-terminal.p/src_shortcuts.c.o -c ../src/shortcuts.c",
+    "file": "../src/shortcuts.c",
+    "output": "helwan-terminal.p/src_shortcuts.c.o"
+  },
+  {
+    "directory": "/home/mo/Downloads/helwan-terminal/helwan-terminal/build",
+    "command": "cc -Ihelwan-terminal.p -I. -I.. -I../include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread -MD -MQ helwan-terminal.p/src_terminal_tab.c.o -MF helwan-terminal.p/src_terminal_tab.c.o.d -o helwan-terminal.p/src_terminal_tab.c.o -c ../src/terminal_tab.c",
+    "file": "../src/terminal_tab.c",
+    "output": "helwan-terminal.p/src_terminal_tab.c.o"
+  },
+  {
+    "directory": "/home/mo/Downloads/helwan-terminal/helwan-terminal/build",
+    "command": "cc -Ihelwan-terminal.p -I. -I.. -I../include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread -MD -MQ helwan-terminal.p/src_preferences.c.o -MF helwan-terminal.p/src_preferences.c.o.d -o helwan-terminal.p/src_preferences.c.o -c ../src/preferences.c",
+    "file": "../src/preferences.c",
+    "output": "helwan-terminal.p/src_preferences.c.o"
+  },
+  {
+    "directory": "/home/mo/Downloads/helwan-terminal/helwan-terminal/build",
+    "command": "cc -Ihelwan-terminal.p -I. -I.. -I../include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread -MD -MQ helwan-terminal.p/src_terminal_window.c.o -MF helwan-terminal.p/src_terminal_window.c.o.d -o helwan-terminal.p/src_terminal_window.c.o -c ../src/terminal_window.c",
     "file": "../src/terminal_window.c",
     "output": "helwan-terminal.p/src_terminal_window.c.o"
+  },
+  {
+    "directory": "/home/mo/Downloads/helwan-terminal/helwan-terminal/build",
+    "command": "cc -Itest_utils.p -I. -I.. -I../include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread -MD -MQ test_utils.p/tests_test_utils.c.o -MF test_utils.p/tests_test_utils.c.o.d -o test_utils.p/tests_test_utils.c.o -c ../tests/test_utils.c",
+    "file": "../tests/test_utils.c",
+    "output": "test_utils.p/tests_test_utils.c.o"
+  },
+  {
+    "directory": "/home/mo/Downloads/helwan-terminal/helwan-terminal/build",
+    "command": "cc -Itest_utils.p -I. -I.. -I../include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread -MD -MQ test_utils.p/src_utils.c.o -MF test_utils.p/src_utils.c.o.d -o test_utils.p/src_utils.c.o -c ../src/utils.c",
+    "file": "../src/utils.c",
+    "output": "test_utils.p/src_utils.c.o"
   }
 ]
