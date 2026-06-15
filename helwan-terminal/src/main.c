@@ -1,13 +1,14 @@
 #include <gtk/gtk.h>
-#include "terminal_window.h" // عشان يتعرف على create_terminal_window
+#include "terminal_window.h"
 
-int main(int argc, char *argv[]) {
-    gtk_init(&argc, &argv); // لازم تعمل init للـ GTK وتمررله argc و argv
+int
+main (int argc, char *argv[])
+{
+    gtk_init(&argc, &argv);
 
-    GtkWidget *window = create_terminal_window(argc, argv); // ****** لازم تعدل السطر ده ******
-
+    GtkWidget *window = create_terminal_window(argc, (char * const *)argv);
     gtk_widget_show_all(window);
-    gtk_main();
 
+    gtk_main();
     return 0;
 }

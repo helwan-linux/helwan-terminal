@@ -1,39 +1,53 @@
 project('helwan-terminal', 'c',
   version : '0.1.0',
-  default_options : ['c_std=gnu11'])
+  default_options : ['warning_level=2', 'c_std=c11']
+)
 
-# Find dependencies
-gtk_dep = dependency('gtk+-3.0')
-vte_dep = dependency('vte-2.91', version: '>=0.50.0', required: true)
-gio_dep = dependency('gio-unix-2.0')
+cc = meson.get_compiler('c')
 
-# Source files
-source_files = [
-  'src/main.c',
-  'src/terminal_window.c',
+deps = [
+  dependency('gtk+-3.0'),
+  dependency('vte-2.91'),
 ]
 
-# Create an executable
+inc = include_directories('include')
+
+sources = files(
+  'src/main.c',
+  'src/config.c',
+  'src/utils.c',
+  'src/shortcuts.c',
+  'src/terminal_tab.c',
+  'src/preferences.c',
+  'src/terminal_window.c',
+)
+
 executable('helwan-terminal',
-  source_files,
-  dependencies : [gtk_dep, vte_dep, gio_dep],
-  install : true)
-
-# Install data files (e.g., GSettings schema)
-install_data(
-  'data/helwan-terminal.gschema.xml',
-  install_dir : join_paths(get_option('datadir'), 'glib-2.0', 'schemas')
+  sources,
+  dependencies : deps,
+  include_directories : inc,
+  install : true,
 )
 
-# تثبيت ملف .desktop
-install_data(
-  'data/helwan-terminal.desktop',
-  install_dir : join_paths(get_option('datadir'), 'applications')
+# GSchema
+install_data('data/helwan-terminal.gschema.xml',
+  install_dir : get_option('datadir') / 'glib-2.0' / 'schemas'
 )
 
-# تثبيت الأيقونة بحجم 64x64
-install_data(
-  'data/icons/hicolor/64x64/apps/helwan-terminal.png',
-  install_dir : join_paths(get_option('datadir'), 'icons', 'hicolor', '64x64', 'apps'),
-  rename : 'helwan-terminal.png'
+# Desktop file
+install_data('data/helwan-terminal.desktop',
+  install_dir : get_option('datadir') / 'applications'
 )
+
+# Icon
+install_data('data/icons/hicolor/64x64/apps/helwan-terminal.png',
+  install_dir : get_option('datadir') / 'icons' / 'hicolor' / '64x64' / 'apps'
+)
+
+# Tests
+test_utils = executable('test_utils',
+  ['tests/test_utils.c', 'src/utils.c'],
+  include_directories : inc,
+  dependencies : [dependency('glib-2.0')],
+)
+test('utils', test_utils)

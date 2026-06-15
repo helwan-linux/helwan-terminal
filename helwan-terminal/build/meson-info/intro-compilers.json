@@ -12,8 +12,8 @@
         "c"
       ],
       "default_suffix": "c",
-      "version": "15.1.1",
-      "full_version": "cc (GCC) 15.1.1 20250425",
+      "version": "16.1.1",
+      "full_version": "cc (GCC) 16.1.1 20260430",
       "linker_id": "ld.bfd"
     }
   },
@@ -30,8 +30,8 @@
         "c"
       ],
       "default_suffix": "c",
-      "version": "15.1.1",
-      "full_version": "cc (GCC) 15.1.1 20250425",
+      "version": "16.1.1",
+      "full_version": "cc (GCC) 16.1.1 20260430",
       "linker_id": "ld.bfd"
     }
   }

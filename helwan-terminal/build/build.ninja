@@ -28,7 +28,7 @@ rule CUSTOM_COMMAND
  restat = 1
 
 rule REGENERATE_BUILD
- command = /usr/bin/meson --internal regenerate /home/sma/Desktop/ter-proj/helwan-terminal .
+ command = /usr/bin/meson --internal regenerate /home/mo/Downloads/helwan-terminal/helwan-terminal .
  description = Regenerating build files
  generator = 1
 
@@ -41,15 +41,53 @@ build PHONY: phony
 build helwan-terminal.p/src_main.c.o: c_COMPILER ../src/main.c
  DEPFILE = helwan-terminal.p/src_main.c.o.d
  DEPFILE_UNQUOTED = helwan-terminal.p/src_main.c.o.d
- ARGS = -Ihelwan-terminal.p -I. -I.. -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=gnu11 -O0 -g -pthread
+ ARGS = -Ihelwan-terminal.p -I. -I.. -I../include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread
+
+build helwan-terminal.p/src_config.c.o: c_COMPILER ../src/config.c
+ DEPFILE = helwan-terminal.p/src_config.c.o.d
+ DEPFILE_UNQUOTED = helwan-terminal.p/src_config.c.o.d
+ ARGS = -Ihelwan-terminal.p -I. -I.. -I../include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread
+
+build helwan-terminal.p/src_utils.c.o: c_COMPILER ../src/utils.c
+ DEPFILE = helwan-terminal.p/src_utils.c.o.d
+ DEPFILE_UNQUOTED = helwan-terminal.p/src_utils.c.o.d
+ ARGS = -Ihelwan-terminal.p -I. -I.. -I../include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread
+
+build helwan-terminal.p/src_shortcuts.c.o: c_COMPILER ../src/shortcuts.c
+ DEPFILE = helwan-terminal.p/src_shortcuts.c.o.d
+ DEPFILE_UNQUOTED = helwan-terminal.p/src_shortcuts.c.o.d
+ ARGS = -Ihelwan-terminal.p -I. -I.. -I../include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread
+
+build helwan-terminal.p/src_terminal_tab.c.o: c_COMPILER ../src/terminal_tab.c
+ DEPFILE = helwan-terminal.p/src_terminal_tab.c.o.d
+ DEPFILE_UNQUOTED = helwan-terminal.p/src_terminal_tab.c.o.d
+ ARGS = -Ihelwan-terminal.p -I. -I.. -I../include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread
+
+build helwan-terminal.p/src_preferences.c.o: c_COMPILER ../src/preferences.c
+ DEPFILE = helwan-terminal.p/src_preferences.c.o.d
+ DEPFILE_UNQUOTED = helwan-terminal.p/src_preferences.c.o.d
+ ARGS = -Ihelwan-terminal.p -I. -I.. -I../include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread
 
 build helwan-terminal.p/src_terminal_window.c.o: c_COMPILER ../src/terminal_window.c
  DEPFILE = helwan-terminal.p/src_terminal_window.c.o.d
  DEPFILE_UNQUOTED = helwan-terminal.p/src_terminal_window.c.o.d
- ARGS = -Ihelwan-terminal.p -I. -I.. -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=gnu11 -O0 -g -pthread
+ ARGS = -Ihelwan-terminal.p -I. -I.. -I../include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/vte-2.91 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread
 
-build helwan-terminal: c_LINKER helwan-terminal.p/src_main.c.o helwan-terminal.p/src_terminal_window.c.o | /usr/lib/libatk-1.0.so /usr/lib/libcairo-gobject.so /usr/lib/libcairo.so /usr/lib/libgdk-3.so /usr/lib/libgdk_pixbuf-2.0.so /usr/lib/libgio-2.0.so /usr/lib/libglib-2.0.so /usr/lib/libgobject-2.0.so /usr/lib/libgtk-3.so /usr/lib/libharfbuzz.so /usr/lib/libpango-1.0.so /usr/lib/libpangocairo-1.0.so /usr/lib/libvte-2.91.so /usr/lib/libz.so
- LINK_ARGS = -Wl,--as-needed -Wl,--no-undefined -Wl,--start-group /usr/lib/libgtk-3.so /usr/lib/libgdk-3.so /usr/lib/libz.so /usr/lib/libpangocairo-1.0.so /usr/lib/libcairo-gobject.so /usr/lib/libgdk_pixbuf-2.0.so /usr/lib/libatk-1.0.so /usr/lib/libpango-1.0.so /usr/lib/libcairo.so /usr/lib/libharfbuzz.so /usr/lib/libgio-2.0.so /usr/lib/libgobject-2.0.so /usr/lib/libglib-2.0.so /usr/lib/libvte-2.91.so -Wl,--end-group
+build helwan-terminal: c_LINKER helwan-terminal.p/src_main.c.o helwan-terminal.p/src_config.c.o helwan-terminal.p/src_utils.c.o helwan-terminal.p/src_shortcuts.c.o helwan-terminal.p/src_terminal_tab.c.o helwan-terminal.p/src_preferences.c.o helwan-terminal.p/src_terminal_window.c.o | /usr/lib/libatk-1.0.so /usr/lib/libcairo-gobject.so /usr/lib/libcairo.so /usr/lib/libgdk-3.so /usr/lib/libgdk_pixbuf-2.0.so /usr/lib/libgio-2.0.so /usr/lib/libglib-2.0.so /usr/lib/libgobject-2.0.so /usr/lib/libgtk-3.so /usr/lib/libharfbuzz.so /usr/lib/libpango-1.0.so /usr/lib/libpangocairo-1.0.so /usr/lib/libvte-2.91.so /usr/lib/libz.so
+ LINK_ARGS = -Wl,--as-needed -Wl,--no-undefined -Wl,--start-group /usr/lib/libgtk-3.so /usr/lib/libgdk-3.so /usr/lib/libpangocairo-1.0.so /usr/lib/libcairo-gobject.so /usr/lib/libgdk_pixbuf-2.0.so /usr/lib/libatk-1.0.so /usr/lib/libpango-1.0.so /usr/lib/libcairo.so /usr/lib/libharfbuzz.so /usr/lib/libgio-2.0.so /usr/lib/libgobject-2.0.so /usr/lib/libglib-2.0.so /usr/lib/libz.so /usr/lib/libvte-2.91.so -Wl,--end-group
+
+build test_utils.p/tests_test_utils.c.o: c_COMPILER ../tests/test_utils.c
+ DEPFILE = test_utils.p/tests_test_utils.c.o.d
+ DEPFILE_UNQUOTED = test_utils.p/tests_test_utils.c.o.d
+ ARGS = -Itest_utils.p -I. -I.. -I../include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread
+
+build test_utils.p/src_utils.c.o: c_COMPILER ../src/utils.c
+ DEPFILE = test_utils.p/src_utils.c.o.d
+ DEPFILE_UNQUOTED = test_utils.p/src_utils.c.o.d
+ ARGS = -Itest_utils.p -I. -I.. -I../include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -pthread
+
+build test_utils: c_LINKER test_utils.p/tests_test_utils.c.o test_utils.p/src_utils.c.o | /usr/lib/libglib-2.0.so
+ LINK_ARGS = -Wl,--as-needed -Wl,--no-undefined /usr/lib/libglib-2.0.so
 
 # Test rules
 
@@ -85,21 +123,15 @@ build meson-internal__dist: CUSTOM_COMMAND PHONY
 
 # Suffix
 
-build scan-build: phony meson-internal__scan-build
-
-build meson-internal__scan-build: CUSTOM_COMMAND PHONY
- COMMAND = /usr/bin/meson --internal scanbuild /home/sma/Desktop/ter-proj/helwan-terminal /home/sma/Desktop/ter-proj/helwan-terminal/build subprojects /usr/bin/meson setup
- pool = console
-
 build uninstall: phony meson-internal__uninstall
 
 build meson-internal__uninstall: CUSTOM_COMMAND PHONY
  COMMAND = /usr/bin/meson --internal uninstall
  pool = console
 
-build all: phony helwan-terminal
+build all: phony helwan-terminal test_utils
 
-build meson-test-prereq: phony 
+build meson-test-prereq: phony test_utils test_utils
 
 build meson-benchmark-prereq: phony 
 
