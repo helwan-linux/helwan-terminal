@@ -2,13 +2,14 @@
   {
     "name": "gtk+-3.0",
     "type": "pkgconfig",
-    "version": "3.24.49",
+    "version": "3.24.52",
     "compile_args": [
       "-I/usr/include/gtk-3.0",
       "-I/usr/include/pango-1.0",
       "-I/usr/include/cloudproviders",
       "-I/usr/include/cairo",
       "-I/usr/include/gdk-pixbuf-2.0",
+      "-I/usr/include/glycin-2",
       "-I/usr/include/at-spi2-atk/2.0",
       "-I/usr/include/at-spi-2.0",
       "-I/usr/include/atk-1.0",
@@ -30,7 +31,6 @@
     "link_args": [
       "/usr/lib/libgtk-3.so",
       "/usr/lib/libgdk-3.so",
-      "/usr/lib/libz.so",
       "/usr/lib/libpangocairo-1.0.so",
       "/usr/lib/libcairo-gobject.so",
       "/usr/lib/libgdk_pixbuf-2.0.so",
@@ -40,7 +40,8 @@
       "/usr/lib/libharfbuzz.so",
       "/usr/lib/libgio-2.0.so",
       "/usr/lib/libgobject-2.0.so",
-      "/usr/lib/libglib-2.0.so"
+      "/usr/lib/libglib-2.0.so",
+      "/usr/lib/libz.so"
     ],
     "include_directories": [],
     "sources": [],
@@ -54,7 +55,7 @@
   {
     "name": "vte-2.91",
     "type": "pkgconfig",
-    "version": "0.80.2",
+    "version": "0.84.0",
     "compile_args": [
       "-I/usr/include/vte-2.91",
       "-I/usr/include/gtk-3.0",
@@ -62,6 +63,7 @@
       "-I/usr/include/cloudproviders",
       "-I/usr/include/cairo",
       "-I/usr/include/gdk-pixbuf-2.0",
+      "-I/usr/include/glycin-2",
       "-I/usr/include/at-spi2-atk/2.0",
       "-I/usr/include/at-spi-2.0",
       "-I/usr/include/atk-1.0",
@@ -84,7 +86,6 @@
       "/usr/lib/libvte-2.91.so",
       "/usr/lib/libgtk-3.so",
       "/usr/lib/libgdk-3.so",
-      "/usr/lib/libz.so",
       "/usr/lib/libpangocairo-1.0.so",
       "/usr/lib/libcairo-gobject.so",
       "/usr/lib/libgdk_pixbuf-2.0.so",
@@ -94,7 +95,8 @@
       "/usr/lib/libharfbuzz.so",
       "/usr/lib/libgio-2.0.so",
       "/usr/lib/libgobject-2.0.so",
-      "/usr/lib/libglib-2.0.so"
+      "/usr/lib/libglib-2.0.so",
+      "/usr/lib/libz.so"
     ],
     "include_directories": [],
     "sources": [],
@@ -108,7 +110,7 @@
   {
     "name": "gio-unix-2.0",
     "type": "pkgconfig",
-    "version": "2.84.3",
+    "version": "2.88.2",
     "compile_args": [
       "-I/usr/include/gio-unix-2.0",
       "-I/usr/include/glib-2.0",

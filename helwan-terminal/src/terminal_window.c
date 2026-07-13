@@ -188,62 +188,35 @@ static void on_tab_close_button_clicked(GtkButton *button, GtkWidget *vte_widget
 // Function to create a new terminal tab
 GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * const *command_to_execute) {
     GtkWidget *vte = vte_terminal_new();
-
-    char **spawn_command;
-    if (command_to_execute && command_to_execute[0] != NULL) {
-        spawn_command = (char **)command_to_execute; // Casting to char**
-    } else {
-        // Use a local, non-const array for the default command
-        char *default_command[] = {"/bin/bash", NULL};
-        spawn_command = default_command;
-    }
-
-    vte_terminal_spawn_async(VTE_TERMINAL(vte),        // 1: VteTerminal *terminal
-                             VTE_PTY_DEFAULT,          // 2: VtePtyFlags pty_flags
-                             NULL,                     // 3: const char *working_directory
-                             spawn_command,            // 4: char **argv
-                             NULL,                     // 5: char **envv
-                             G_SPAWN_DEFAULT,          // 6: GSpawnFlags spawn_flags
-                             NULL,                     // 7: GSpawnChildSetupFunc child_setup
-                             NULL,                     // 8: gpointer child_setup_data
-                             (GDestroyNotify)NULL,     // 9: GDestroyNotify child_setup_data_destroy
-                             -1,                       // 10: int timeout
-                             NULL,                     // 11: GCancellable *cancellable
-                             (VteTerminalSpawnAsyncCallback)NULL, // 12: VteTerminalSpawnAsyncCallback callback
-                             (gpointer)NULL);          // 13: gpointer user_data
-
-    // Add a reasonable initial size to the VTE terminal
-    // This explicitly tells the VTE widget (and thus the PTY) its dimensions.
-    // It's a common workaround if the shell doesn't receive proper dimensions automatically.
-    vte_terminal_set_size(VTE_TERMINAL(vte), 80, 24); // 80 columns, 24 rows - standard default
-
-    // Apply the current font settings to the new terminal from cached string
-    PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
-    double applied_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
-    gchar *applied_font_family = g_strdup(pango_font_description_get_family(temp_font_desc));
-    pango_font_description_free(temp_font_desc);
-
-    apply_font_settings(VTE_TERMINAL(vte), applied_font_family, applied_font_size);
-    g_free(applied_font_family);
-
+    
     g_signal_connect(vte, "key-press-event", G_CALLBACK(on_terminal_key_press), self);
+    // ربط إشارة الفأرة
     g_signal_connect(vte, "button-press-event", G_CALLBACK(on_terminal_button_press), vte);
-    gtk_widget_add_events(vte, GDK_BUTTON_PRESS_MASK);
 
-    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    GtkWidget *tab_label = gtk_label_new("Terminal");
-    GtkWidget *close_button = gtk_button_new_from_icon_name("window-close-symbolic", GTK_ICON_SIZE_SMALL_TOOLBAR);
-    gtk_button_set_relief(GTK_BUTTON(close_button), GTK_RELIEF_NONE);
-
-    g_signal_connect(close_button, "clicked", G_CALLBACK(on_tab_close_button_clicked), vte);
-
-    gtk_box_pack_start(GTK_BOX(hbox), tab_label, TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), close_button, FALSE, FALSE, 0);
-    gtk_widget_show_all(hbox);
-
-    gtk_notebook_append_page(GTK_NOTEBOOK(self->notebook), vte, hbox);
-    gtk_widget_show_all(vte);
-
+    // vte_terminal_spawn_async تقوم بـ fork/exec للعملية كما يطلب Geany
+    if (command_to_execute != NULL && command_to_execute[0] != NULL) {
+        vte_terminal_spawn_async(VTE_TERMINAL(vte), 
+                                 VTE_PTY_DEFAULT, 
+                                 NULL, 
+                                 command_to_execute, 
+                                 NULL, 
+                                 G_SPAWN_SEARCH_PATH, 
+                                 NULL, NULL, NULL, -1, NULL, NULL, NULL);
+    } else {
+        // تنفيذ Bash افتراضي[cite: 6]
+        char *default_cmd[] = {"/bin/bash", NULL};
+        vte_terminal_spawn_async(VTE_TERMINAL(vte), 
+                                 VTE_PTY_DEFAULT, 
+                                 NULL, 
+                                 default_cmd, 
+                                 NULL, 
+                                 G_SPAWN_SEARCH_PATH, 
+                                 NULL, NULL, NULL, -1, NULL, NULL, NULL);
+    }
+    
+    gtk_notebook_append_page(GTK_NOTEBOOK(self->notebook), vte, NULL);
+    gtk_widget_show(vte);
+    
     return vte;
 }
 
@@ -479,26 +452,22 @@ static void on_new_tab_button_clicked(GtkButton *button, HelwanTerminalWindow *w
 
 // Function to create the main terminal window
 GtkWidget *create_terminal_window(gint argc, char * const *argv) {
-    // Initialize GSettings for our schema
     if (!settings) {
         settings = g_settings_new("org.helwan_terminal.gschema");
     }
 
-    // Load initial font settings from GSettings
     if (!cached_font_string) {
         cached_font_string = g_settings_get_string(settings, "font-family");
-        if (!cached_font_string) { // Fallback if GSettings doesn't have it (e.g., first run)
+        if (!cached_font_string) {
             cached_font_string = g_strdup("monospace 10");
         }
     }
 
-    // Get initial opacity from GSettings
-    double initial_opacity = 0.85; // Default fallback
+    double initial_opacity = 0.85;
     if (settings) {
         initial_opacity = g_settings_get_double(settings, "opacity");
     }
 
-    // Create an instance of our custom window type
     gint initial_window_width = g_settings_get_int(settings, "window-width");
     gint initial_window_height = g_settings_get_int(settings, "window-height");
 
@@ -515,27 +484,23 @@ GtkWidget *create_terminal_window(gint argc, char * const *argv) {
 
     GtkWidget *header_bar = gtk_header_bar_new();
     gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(header_bar), TRUE);
-    gtk_header_bar_set_title(GTK_HEADER_BAR(header_bar), "Helwan Terminal"); // عنوان النافذة الرئيسي
+    gtk_header_bar_set_title(GTK_HEADER_BAR(header_bar), "Helwan Terminal");
     gtk_window_set_titlebar(GTK_WINDOW(window), header_bar);
 
-    // زر "New Tab"
     GtkWidget *new_tab_button = gtk_button_new_from_icon_name("list-add-symbolic", GTK_ICON_SIZE_SMALL_TOOLBAR);
     gtk_button_set_relief(GTK_BUTTON(new_tab_button), GTK_RELIEF_NONE);
     g_signal_connect(new_tab_button, "clicked", G_CALLBACK(on_new_tab_button_clicked), window);
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header_bar), new_tab_button);
 
-    // زر "Preferences"
     GtkWidget *settings_button = gtk_button_new_from_icon_name("preferences-system-symbolic", GTK_ICON_SIZE_SMALL_TOOLBAR);
     gtk_button_set_relief(GTK_BUTTON(settings_button), GTK_RELIEF_NONE);
     g_signal_connect(settings_button, "clicked", G_CALLBACK(on_preferences_button_clicked), window);
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header_bar), settings_button);
 
-    // زر "About" الجديد والمستقل
     GtkWidget *about_button = gtk_button_new_from_icon_name("help-about-symbolic", GTK_ICON_SIZE_SMALL_TOOLBAR);
     gtk_button_set_relief(GTK_BUTTON(about_button), GTK_RELIEF_NONE);
     g_signal_connect(about_button, "clicked", G_CALLBACK(on_about_button_clicked), window);
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header_bar), about_button);
-
 
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -546,24 +511,23 @@ GtkWidget *create_terminal_window(gint argc, char * const *argv) {
 
     gtk_box_pack_start(GTK_BOX(vbox), window->notebook, TRUE, TRUE, 0);
 
-    char * const *command_for_first_tab = NULL;
-    if (argc > 1) { // لو فيه أي arguments بعد اسم البرنامج
-        if (strcmp(argv[1], "-e") == 0) { // لو الـ argument التاني هو "-e"
-            if (argc > 2) { // ولو فيه أمر بعد "-e"
-                // يبقى الأمر اللي عايز يتنفذ بيبدأ من argv[2]
-                command_for_first_tab = &argv[2];
-            } else {
-                // لو "-e" موجود ومفيش أمر بعده، نفتح bash عادي
-                command_for_first_tab = NULL;
-            }
-        } else {
-            // لو أول argument مش "-e"، يبقى بنعتبر كل الـ arguments أمر واحد
-            command_for_first_tab = &argv[1];
+    char **spawn_argv = NULL;
+    if (argc > 2 && strcmp(argv[1], "-e") == 0) {
+        GString *command_string = g_string_new(argv[2]);
+        for (int i = 3; i < argc; i++) {
+            g_string_append_printf(command_string, " %s", argv[i]);
         }
+        
+        if (g_shell_parse_argv(command_string->str, NULL, &spawn_argv, NULL)) {
+            helwan_terminal_window_new_tab(window, spawn_argv);
+            g_strfreev(spawn_argv);
+        } else {
+            helwan_terminal_window_new_tab(window, NULL);
+        }
+        g_string_free(command_string, TRUE);
+    } else {
+        helwan_terminal_window_new_tab(window, NULL);
     }
-    
-    // نفتح أول tab بالـ command اللي لقيناه (أو بـ NULL لو مفيش)
-    helwan_terminal_window_new_tab(window, command_for_first_tab);
     
     return GTK_WIDGET(window);
 }
