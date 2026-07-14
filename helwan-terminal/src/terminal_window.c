@@ -172,51 +172,73 @@ static gboolean on_terminal_button_press(GtkWidget *widget, GdkEventButton *even
 }
 
 // Callback for closing a tab
-static void on_tab_close_button_clicked(GtkButton *button, GtkWidget *vte_widget) {
+static void on_tab_close_button_clicked(GtkButton *button, gpointer user_data) {
     (void)button;
-    GtkWidget *notebook = gtk_widget_get_parent(gtk_widget_get_parent(vte_widget));
-    gint page_num = gtk_notebook_page_num(GTK_NOTEBOOK(notebook), vte_widget);
-    if (page_num != -1) {
-        gtk_notebook_remove_page(GTK_NOTEBOOK(notebook), page_num);
+    GtkWidget *vte_widget = GTK_WIDGET(user_data);
+
+    // الحصول على الـ Notebook مباشرة من الـ parent
+    GtkWidget *notebook = gtk_widget_get_parent(vte_widget);
+    while (notebook && !GTK_IS_NOTEBOOK(notebook)) {
+        notebook = gtk_widget_get_parent(notebook);
     }
 
-    if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(notebook)) == 0) {
-        gtk_main_quit();
+    if (notebook && GTK_IS_NOTEBOOK(notebook)) {
+        gint page_num = gtk_notebook_page_num(GTK_NOTEBOOK(notebook), vte_widget);
+        if (page_num != -1) {
+            gtk_notebook_remove_page(GTK_NOTEBOOK(notebook), page_num);
+        }
+
+        // إغلاق البرنامج فقط إذا كان هذا هو التبويب الأخير
+        if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(notebook)) == 0) {
+            gtk_main_quit();
+        }
     }
 }
 
 // Function to create a new terminal tab
 GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * const *command_to_execute) {
     GtkWidget *vte = vte_terminal_new();
-    
+
     g_signal_connect(vte, "key-press-event", G_CALLBACK(on_terminal_key_press), self);
-    // ربط إشارة الفأرة
     g_signal_connect(vte, "button-press-event", G_CALLBACK(on_terminal_button_press), vte);
 
-    // vte_terminal_spawn_async تقوم بـ fork/exec للعملية كما يطلب Geany
+    // تشغيل الأمر المطلوب أو Bash افتراضي
     if (command_to_execute != NULL && command_to_execute[0] != NULL) {
-        vte_terminal_spawn_async(VTE_TERMINAL(vte), 
-                                 VTE_PTY_DEFAULT, 
-                                 NULL, 
-                                 command_to_execute, 
-                                 NULL, 
-                                 G_SPAWN_SEARCH_PATH, 
+        vte_terminal_spawn_async(VTE_TERMINAL(vte),
+                                 VTE_PTY_DEFAULT,
+                                 NULL,
+                                 command_to_execute,
+                                 NULL,
+                                 G_SPAWN_SEARCH_PATH,
                                  NULL, NULL, NULL, -1, NULL, NULL, NULL);
     } else {
-        // تنفيذ Bash افتراضي[cite: 6]
         char *default_cmd[] = {"/bin/bash", NULL};
-        vte_terminal_spawn_async(VTE_TERMINAL(vte), 
-                                 VTE_PTY_DEFAULT, 
-                                 NULL, 
-                                 default_cmd, 
-                                 NULL, 
-                                 G_SPAWN_SEARCH_PATH, 
+        vte_terminal_spawn_async(VTE_TERMINAL(vte),
+                                 VTE_PTY_DEFAULT,
+                                 NULL,
+                                 default_cmd,
+                                 NULL,
+                                 G_SPAWN_SEARCH_PATH,
                                  NULL, NULL, NULL, -1, NULL, NULL, NULL);
     }
-    
-    gtk_notebook_append_page(GTK_NOTEBOOK(self->notebook), vte, NULL);
+
+    // إنشاء label للتبويب مع زر إغلاق
+    GtkWidget *label_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget *tab_label = gtk_label_new("Terminal");
+    GtkWidget *close_button = gtk_button_new_from_icon_name("window-close-symbolic", GTK_ICON_SIZE_MENU);
+
+    gtk_button_set_relief(GTK_BUTTON(close_button), GTK_RELIEF_NONE);
+    gtk_box_pack_start(GTK_BOX(label_box), tab_label, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(label_box), close_button, FALSE, FALSE, 0);
+
+    // ربط زر الإغلاق بالدالة
+    g_signal_connect(close_button, "clicked", G_CALLBACK(on_tab_close_button_clicked), vte);
+
+    // إضافة التبويب للـ notebook مع الـ label المخصص
+    gtk_notebook_append_page(GTK_NOTEBOOK(self->notebook), vte, label_box);
+    gtk_widget_show_all(label_box);
     gtk_widget_show(vte);
-    
+
     return vte;
 }
 
