@@ -14,22 +14,34 @@ source=("git+${url}.git")
 sha256sums=('SKIP')
 
 build() {
-  cd "helwan-terminal"
-  meson setup build . --prefix=/usr --reconfigure
+  # الانتقال للمجلد الذي تم استنساخه
+  cd "$srcdir/helwan-terminal"
+
+  # البحث عن ملف meson.build وتحديد المجلد الذي يحتوي عليه
+  # سنقوم بإنشاء مجلد build في المكان الذي يوجد به ملف meson.build
+  if [ -f "meson.build" ]; then
+    meson setup build --prefix=/usr
+  else
+    # إذا كان meson.build داخل مجلد فرعي
+    find . -name meson.build -exec dirname {} \; | xargs -I {} meson setup build {} --prefix=/usr
+  fi
+
   ninja -C build
 }
 
 package() {
-  cd "helwan-terminal"
+  cd "$srcdir/helwan-terminal"
+  
+  # تثبيت الملفات عبر ninja
   DESTDIR="${pkgdir}" ninja -C build install
 
   # تثبيت الملف التنفيذي
   install -Dm755 build/helwan-terminal "${pkgdir}/usr/bin/hel-terminal"
 
-  # نسخ ملف gschema
-  install -Dm644 helwan-terminal.gschema.xml \
+  # نسخ ملف الإعدادات
+  install -Dm644 helwan-terminal/data/helwan-terminal.gschema.xml \
     "${pkgdir}/usr/share/glib-2.0/schemas/helwan-terminal.gschema.xml"
 
-  # Compile للـ schemas أثناء التثبيت
-  glib-compile-schemas "${pkgdir}/usr/share/glib-2.0/schemas/"
+  # حذف ملف الفهرس إذا وُجد في مجلد التثبيت لكي لا يتعارض مع النظام
+  rm -f "${pkgdir}/usr/share/glib-2.0/schemas/gschemas.compiled"
 }
