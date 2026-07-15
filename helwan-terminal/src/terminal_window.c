@@ -447,7 +447,7 @@ static void on_about_button_clicked(GtkButton *button, HelwanTerminalWindow *win
 
     gtk_show_about_dialog(GTK_WINDOW(window),
                           "program-name", "Helwan Terminal",
-                          "version", "0.1.0", // رقم الإصدارة
+                          "version", "0.1.3", // رقم الإصدارة
                           "copyright", "© 2025 Helwan Linux", // حقوق الملكية
                           "comments", "A powerful terminal emulator developed at Helwan Linux.", // معلومات إضافية
                           "website", "https://github.com/helwan-linux/helwan-terminal", // رابط المشروع (يمكنك تغييره)
