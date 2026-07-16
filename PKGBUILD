@@ -2,7 +2,7 @@
 
 pkgname=hel-terminal
 pkgver=0.1.3
-pkgrel=4
+pkgrel=5
 pkgdesc="A powerful and customizable terminal emulator for Helwan Linux."
 arch=('x86_64')
 url="https://github.com/helwan-linux/helwan-terminal"
