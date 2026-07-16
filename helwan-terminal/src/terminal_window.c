@@ -105,7 +105,7 @@ static gboolean on_terminal_key_press(GtkWidget *widget, GdkEventKey *event, Hel
     // Check for Ctrl+0 (Reset Zoom)
     else if ((event->state & GDK_CONTROL_MASK) && event->keyval == GDK_KEY_0) {
         g_free(cached_font_string);
-        cached_font_string = g_strdup("monospace 10"); // Reset to default string
+        cached_font_string = g_strdup("monospace 18"); // Reset to default string
         PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
         double reset_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
         gchar *reset_font_family = g_strdup(pango_font_description_get_family(temp_font_desc));
@@ -376,7 +376,7 @@ static void create_preferences_dialog(HelwanTerminalWindow *window) {
         font_from_settings = g_settings_get_string(settings, "font-family");
     }
     if (!font_from_settings) {
-        font_from_settings = g_strdup("monospace 10");
+        font_from_settings = g_strdup("monospace 18");
     }
     PangoFontDescription *initial_font_desc = pango_font_description_from_string(font_from_settings);
     gtk_font_chooser_set_font_desc(GTK_FONT_CHOOSER(font_chooser_widget), initial_font_desc);
@@ -387,7 +387,7 @@ static void create_preferences_dialog(HelwanTerminalWindow *window) {
     GtkWidget *width_label = gtk_label_new("Window Width:");
     gtk_grid_attach(GTK_GRID(grid), width_label, 0, 1, 1, 1);
     GtkWidget *width_entry = gtk_entry_new();
-    gint initial_width = 800;
+    gint initial_width = 1200;
     if (settings) {
         initial_width = g_settings_get_int(settings, "window-width");
     }
@@ -481,7 +481,7 @@ GtkWidget *create_terminal_window(gint argc, char * const *argv) {
     if (!cached_font_string) {
         cached_font_string = g_settings_get_string(settings, "font-family");
         if (!cached_font_string) {
-            cached_font_string = g_strdup("monospace 10");
+            cached_font_string = g_strdup("monospace 18");
         }
     }
 
