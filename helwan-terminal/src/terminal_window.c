@@ -32,20 +32,19 @@ static void apply_font_settings(VteTerminal *terminal, const char *font_family, 
 }
 
 // Callback for key press events on the VTE terminal
+// Callback for key press events on the VTE terminal
 static gboolean on_terminal_key_press(GtkWidget *widget, GdkEventKey *event, HelwanTerminalWindow *window) {
     (void)window;
 
     // Check for Ctrl+Shift+C (Copy)
     if ((event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) == (GDK_CONTROL_MASK | GDK_SHIFT_MASK) &&
         event->keyval == GDK_KEY_C) {
-        // Updated to non-deprecated function
         vte_terminal_copy_clipboard_format(VTE_TERMINAL(widget), VTE_FORMAT_TEXT);
         return TRUE;
     }
     // Check for Ctrl+Shift+V (Paste)
     else if ((event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) == (GDK_CONTROL_MASK | GDK_SHIFT_MASK) &&
              event->keyval == GDK_KEY_V) {
-        // Updated to use gtk_clipboard_wait_for_text for GTK3
         GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
         gchar *text = gtk_clipboard_wait_for_text(clipboard);
         if (text) {
@@ -54,69 +53,74 @@ static gboolean on_terminal_key_press(GtkWidget *widget, GdkEventKey *event, Hel
         }
         return TRUE;
     }
-    // Check for Ctrl++ (Zoom In) - Try both GDK_KEY_equal (for '+') and GDK_KEY_plus
+    // Check for Ctrl++ (Zoom In)
     else if ((event->state & GDK_CONTROL_MASK) && (event->keyval == GDK_KEY_plus || event->keyval == GDK_KEY_equal)) {
         PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
         double current_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
-        gchar *current_font_family = g_strdup(pango_font_description_get_family(temp_font_desc)); // Get current family
+        gchar *current_font_family = g_strdup(pango_font_description_get_family(temp_font_desc));
         pango_font_description_free(temp_font_desc);
 
         current_font_size += 1.0;
 
-        g_free(cached_font_string); // Free old string
-        // Create new font string from extracted family and new size
+        g_free(cached_font_string);
         cached_font_string = g_strdup_printf("%s %g", current_font_family, current_font_size);
-        g_free(current_font_family); // Free family string
 
-        // Apply font settings to the current terminal
-        PangoFontDescription *new_font_desc_for_apply = pango_font_description_from_string(cached_font_string);
-        double new_applied_size = (double)pango_font_description_get_size(new_font_desc_for_apply) / PANGO_SCALE;
-        gchar *new_applied_family = g_strdup(pango_font_description_get_family(new_font_desc_for_apply));
-        pango_font_description_free(new_font_desc_for_apply);
-        apply_font_settings(VTE_TERMINAL(widget), new_applied_family, new_applied_size);
-        g_free(new_applied_family);
+        apply_font_settings(VTE_TERMINAL(widget), current_font_family, current_font_size);
+        g_free(current_font_family);
+
+        // حفظ التغيير في GSettings
+        if (settings) {
+            g_settings_set_string(settings, "font-family", cached_font_string);
+        }
 
         return TRUE;
     }
-    // Check for Ctrl+- (Zoom Out) - Try both GDK_KEY_minus and GDK_KEY_underscore (for '-')
+    // Check for Ctrl+- (Zoom Out)
     else if ((event->state & GDK_CONTROL_MASK) && (event->keyval == GDK_KEY_minus || event->keyval == GDK_KEY_underscore)) {
         PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
         double current_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
-        gchar *current_font_family = g_strdup(pango_font_description_get_family(temp_font_desc)); // Get current family
+        gchar *current_font_family = g_strdup(pango_font_description_get_family(temp_font_desc));
         pango_font_description_free(temp_font_desc);
 
         if (current_font_size > 1.0) {
             current_font_size -= 1.0;
-            g_free(cached_font_string); // Free old string
-            // Create new font string from extracted family and new size
+            g_free(cached_font_string);
             cached_font_string = g_strdup_printf("%s %g", current_font_family, current_font_size);
-            
-            // Apply font settings to the current terminal
-            PangoFontDescription *new_font_desc_for_apply = pango_font_description_from_string(cached_font_string);
-            double new_applied_size = (double)pango_font_description_get_size(new_font_desc_for_apply) / PANGO_SCALE;
-            gchar *new_applied_family = g_strdup(pango_font_description_get_family(new_font_desc_for_apply));
-            pango_font_description_free(new_font_desc_for_apply);
-            apply_font_settings(VTE_TERMINAL(widget), new_applied_family, new_applied_size);
-            g_free(new_applied_family);
+
+            apply_font_settings(VTE_TERMINAL(widget), current_font_family, current_font_size);
+
+            // حفظ التغيير في GSettings
+            if (settings) {
+                g_settings_set_string(settings, "font-family", cached_font_string);
+            }
         }
-        g_free(current_font_family); // Free family string
+        g_free(current_font_family);
         return TRUE;
     }
     // Check for Ctrl+0 (Reset Zoom)
     else if ((event->state & GDK_CONTROL_MASK) && event->keyval == GDK_KEY_0) {
         g_free(cached_font_string);
-        cached_font_string = g_strdup("monospace 18"); // Reset to default string
+        cached_font_string = g_strdup("monospace 10");
+
         PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
         double reset_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
         gchar *reset_font_family = g_strdup(pango_font_description_get_family(temp_font_desc));
         pango_font_description_free(temp_font_desc);
+
         apply_font_settings(VTE_TERMINAL(widget), reset_font_family, reset_font_size);
         g_free(reset_font_family);
+
+        // حفظ التغيير في GSettings
+        if (settings) {
+            g_settings_set_string(settings, "font-family", cached_font_string);
+        }
+
         return TRUE;
     }
 
     return FALSE;
 }
+
 
 // Callback for "Copy" menu item
 static void on_copy_menu_item_activated(GtkMenuItem *menu_item, VteTerminal *terminal) {
@@ -376,7 +380,7 @@ static void create_preferences_dialog(HelwanTerminalWindow *window) {
         font_from_settings = g_settings_get_string(settings, "font-family");
     }
     if (!font_from_settings) {
-        font_from_settings = g_strdup("monospace 18");
+        font_from_settings = g_strdup("monospace 10");
     }
     PangoFontDescription *initial_font_desc = pango_font_description_from_string(font_from_settings);
     gtk_font_chooser_set_font_desc(GTK_FONT_CHOOSER(font_chooser_widget), initial_font_desc);
@@ -387,7 +391,7 @@ static void create_preferences_dialog(HelwanTerminalWindow *window) {
     GtkWidget *width_label = gtk_label_new("Window Width:");
     gtk_grid_attach(GTK_GRID(grid), width_label, 0, 1, 1, 1);
     GtkWidget *width_entry = gtk_entry_new();
-    gint initial_width = 1200;
+    gint initial_width = 800;
     if (settings) {
         initial_width = g_settings_get_int(settings, "window-width");
     }
@@ -481,7 +485,7 @@ GtkWidget *create_terminal_window(gint argc, char * const *argv) {
     if (!cached_font_string) {
         cached_font_string = g_settings_get_string(settings, "font-family");
         if (!cached_font_string) {
-            cached_font_string = g_strdup("monospace 18");
+            cached_font_string = g_strdup("monospace 10");
         }
     }
 
