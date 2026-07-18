@@ -1,20 +1,17 @@
-# Helwan Linux
+# Hel-Terminal
 
-Helwan Linux is a lightweight, Arch-based Linux distribution designed for home, education, and development purposes. Built with the KISS (Keep It Simple, Stupid) philosophy in mind, it provides a stable and efficient foundation for users and developers alike.
+A minimalist, lightweight terminal emulator built for the Helwan Linux distribution. Developed with the KISS (Keep It Simple, Stupid) philosophy, it focuses on efficiency, performance, and seamless integration with the Helwan desktop environments[cite: 2, 5].
 
-## Editions
-We offer three distinct flavours to suit different workflows:
-- **Home:** Features the GNOME desktop environment for a modern, user-friendly experience.
-- **Edu:** Ships with Xfce for a lightweight and educational-focused environment[cite: 2].
-- **Dev:** Optimized for developers, featuring the Cinnamon desktop along with a pre-configured suite of compilers and interpreters, including PHP and Rust[cite: 2].
+## Technical Overview
+- **Language:** Written in C for optimal performance.
+- **Dependencies:** Built using GTK3 modules for a lightweight graphical interface[cite: 5].
+- **Build System:** Utilizes the Meson build system for streamlined compilation[cite: 5].
+- **Customization:** Supports dynamic command loading via JSON, allowing users to define custom "intents" and aliases easily[cite: 5, 7].
 
-## Key Features
-- **Arch-based:** Benefit from the power and flexibility of the Arch Linux ecosystem[cite: 2].
-- **Customization:** Includes a comprehensive "Distro Building" manual, covering the Archiso tool for custom ISO images and the Calamares installer[cite: 2].
-- **Architecture:** Built for x86_64 systems[cite: 2].
-
-## Documentation
-For detailed guides on building custom images or system installation, please refer to our comprehensive "Distro Building" manual included in the repository.
-
-## Contribution
-As the sole developer, I welcome feedback and contributions from the community to keep Helwan Linux simple, robust, and effective[cite: 2].
+## Installation
+1. Ensure `meson` and `gtk3` development headers are installed.
+2. Clone the repository.
+3. Build the project:
+   ```bash
+   meson setup build
+   ninja -C build
