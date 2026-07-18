@@ -242,6 +242,17 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
     gtk_notebook_append_page(GTK_NOTEBOOK(self->notebook), vte, label_box);
     gtk_widget_show_all(label_box);
     gtk_widget_show(vte);
+    
+    // تطبيق إعدادات الخط المحفوظة على الـ VTE الجديد
+    if (cached_font_string) {
+        PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
+        double applied_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
+        gchar *applied_font_family = g_strdup(pango_font_description_get_family(temp_font_desc));
+        pango_font_description_free(temp_font_desc);
+
+        apply_font_settings(VTE_TERMINAL(vte), applied_font_family, applied_font_size);
+        g_free(applied_font_family);
+    }
 
     return vte;
 }
