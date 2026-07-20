@@ -30,10 +30,7 @@ jobs:
         run: |
           su - builder -c "
             cd /__w/helwan-terminal/helwan-terminal
-            cd ..
-            tar --exclude='.git' --exclude='build' -czf helwan-terminal.tar.gz helwan-terminal
-            mv helwan-terminal.tar.gz helwan-terminal/
-            cd helwan-terminal
+            tar --exclude='.git' --exclude='build' -czf helwan-terminal-0.1.4.tar.gz .
             makepkg -sf --noconfirm
           "
 
