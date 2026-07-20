@@ -15,7 +15,7 @@ source=("${pkgname}-${pkgver}.tar.gz")
 sha256sums=('SKIP')
 
 build() {
-    cd "${srcdir}"
+    cd "${srcdir}/helwan-terminal"
 
     meson setup build \
         --prefix=/usr \
@@ -25,7 +25,7 @@ build() {
 }
 
 package() {
-    cd "${srcdir}"
+    cd "${srcdir}/helwan-terminal"
 
     DESTDIR="${pkgdir}" ninja -C build install
 
