@@ -10,17 +10,17 @@ license=('GPL3')
 depends=('gtk3' 'vte3' 'glib2')
 makedepends=('meson' 'ninja')
 
-source=()
-sha256sums=()
+source=("$pkgname-$pkgver.tar.gz")
+sha256sums=('SKIP')
 
 build() {
-  cd "$startdir"
-  arch-meson build --prefix=/usr
+  cd "$srcdir/$pkgname"
+  meson setup build --prefix=/usr
   ninja -C build
 }
 
 package() {
-  cd "$startdir"
+  cd "$srcdir/$pkgname"
   DESTDIR="${pkgdir}" ninja -C build install
   rm -f "${pkgdir}/usr/share/glib-2.0/schemas/gschemas.compiled"
 }
