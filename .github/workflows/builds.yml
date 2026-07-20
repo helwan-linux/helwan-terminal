@@ -23,9 +23,12 @@ jobs:
 
       - name: Create source tarball
         run: |
-          mkdir source
-          cp -a . source/hel-terminal
-          tar -C source -czf hel-terminal-0.1.4.tar.gz hel-terminal
+          tar \
+            --exclude=.git \
+            --exclude=build \
+            --exclude=hel-terminal-0.1.4.tar.gz \
+            --transform='s|^\./|hel-terminal/|' \
+            -czf hel-terminal-0.1.4.tar.gz .
 
       - name: Build package
         run: |
