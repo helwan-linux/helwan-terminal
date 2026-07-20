@@ -1,57 +1,58 @@
-name: Build All Formats
+name: Build Packages
 
 on:
   push:
     branches: [ "main", "master" ]
-  release:
-    types: [ published ]
+  workflow_dispatch:
 
 jobs:
   build-arch:
     runs-on: ubuntu-latest
     container:
       image: archlinux:base-devel
+
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare user and build
+
+      - name: Install dependencies
+        run: |
+          pacman -Sy --noconfirm
+          pacman -S --noconfirm sudo base-devel meson ninja gtk3 vte4
+
+      - name: Create builder
         run: |
           useradd -m builder
           echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
           chown -R builder:builder .
-      - name: Build Arch Package (.zst)
-        run: sudo -u builder makepkg -sf --noconfirm
-      - uses: actions/upload-artifact@v4
+
+      - name: Build package
+        run: |
+          sudo -u builder makepkg -sf --noconfirm
+
+      - name: Upload Arch package
+        uses: actions/upload-artifact@v4
         with:
           name: arch-package
           path: "*.pkg.tar.zst"
 
-  build-debian:
-    runs-on: ubuntu-latest
-    container:
-      image: debian:latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build Debian Package (.deb)
-        run: |
-          apt-get update
-          apt-get install -y dpkg-dev debhelper meson ninja-build build-essential
-          dpkg-buildpackage -us -uc -b
-      - uses: actions/upload-artifact@v4
-        with:
-          name: debian-package
-          path: "../*.deb"
-
   build-fedora:
     runs-on: ubuntu-latest
     container:
-      image: fedora:latest
+      image: fedora:44
+
     steps:
       - uses: actions/checkout@v4
-      - name: Build RPM Package (.rpm)
+
+      - name: Install dependencies
         run: |
-          dnf install -y rpm-build rpmdevtools meson ninja-build gcc gtk3-devel vte3-devel glib2-devel
+          dnf -y install rpm-build rpmdevtools meson ninja-build gcc gtk3-devel vte291-devel glib2-devel
+
+      - name: Build RPM
+        run: |
           rpmbuild -ba hel-terminal.spec
-      - uses: actions/upload-artifact@v4
+
+      - name: Upload RPM package
+        uses: actions/upload-artifact@v4
         with:
-          name: fedora-package
+          name: rpm-package
           path: "/root/rpmbuild/RPMS/**/*.rpm"
