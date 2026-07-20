@@ -1,44 +1,7 @@
-https://github.com/helwan-linux/helwan-terminal
-
+https://github.com/helwan-linux/helwan-terminal/
 📁 helwan-terminal/
 ├── 📄 LICENSE
 ├── 📄 README.md
-├── 📁 build
-│   ├── 📄 build.ninja
-│   ├── 📄 compile_commands.json
-│   ├── 📁 helwan-terminal.p
-│   │   ├── 📄 src_main.c.o
-│   │   └── 📄 src_terminal_window.c.o
-│   ├── 📁 meson-info
-│   │   ├── 📄 intro-benchmarks.json
-│   │   ├── 📄 intro-buildoptions.json
-│   │   ├── 📄 intro-buildsystem_files.json
-│   │   ├── 📄 intro-compilers.json
-│   │   ├── 📄 intro-dependencies.json
-│   │   ├── 📄 intro-install_plan.json
-│   │   ├── 📄 intro-installed.json
-│   │   ├── 📄 intro-machines.json
-│   │   ├── 📄 intro-projectinfo.json
-│   │   ├── 📄 intro-targets.json
-│   │   ├── 📄 intro-tests.json
-│   │   └── 📄 meson-info.json
-│   ├── 📁 meson-logs
-│   │   ├── 📄 install-log.txt
-│   │   ├── 📄 meson-log.txt
-│   │   └── 📄 meson-setup.txt
-│   └── 📁 meson-private
-│       ├── 📄 build.dat
-│       ├── 📄 cmd_line.txt
-│       ├── 📄 coredata.dat
-│       ├── 📄 coredata.dat.prev
-│       ├── 📄 install.dat
-│       ├── 📄 meson.lock
-│       ├── 📄 meson_benchmark_setup.dat
-│       ├── 📄 meson_test_setup.dat
-│       ├── 📄 sanity_check_for_c.c
-│       ├── 📄 sanity_check_for_c.exe
-│       ├── 📄 sanitycheckc.c
-│       └── 📄 sanitycheckc.exe
 ├── 📁 data
 │   ├── 📄 helwan-terminal.desktop
 │   ├── 📄 helwan-terminal.gschema.xml
@@ -46,15 +9,15 @@ https://github.com/helwan-linux/helwan-terminal
 │       └── 📁 hicolor
 │           └── 📁 64x64
 │               └── 📁 apps
-│                   └── 📄 helwan-terminal.png
+│                   ├── 📄 helwan-terminal.png
 ├── 📄 meson.build
 └── 📁 src
     ├── 📄 about.c
     ├── 📄 font_settings.c
+    ├── 📄 key_events.c
     ├── 📄 main.c
     ├── 📄 mouse_events.c
     ├── 📄 preferences.c
     ├── 📄 tabs.c
     ├── 📄 terminal_window.c
-    ├── 📄 terminal_window.h
-    └── 📄 key_events.c
+    └── 📄 terminal_window.h
