@@ -1,4 +1,4 @@
-# Maintainer: Saeed Badrelden <helwanlinux@gmail.com>
+# Maintainer: Saeed Badreldin <helwanlinux@gmail.com>
 
 pkgname=helwan-terminal
 pkgver=0.1.4
@@ -8,19 +8,25 @@ arch=('x86_64')
 url="https://github.com/helwan-linux/helwan-terminal"
 license=('GPL3')
 depends=('gtk3' 'vte3' 'glib2')
-makedepends=('meson' 'ninja' 'git')
+makedepends=('meson' 'ninja')
 
-source=("git+${url}.git")
+# الاعتماد على المجلد الحالي مباشرة بدون git clone خارجي أثناء البناء
+source=("$pkgname-$pkgver.tar.gz")
 sha256sums=('SKIP')
 
+prepare() {
+  # نقل الملفات الحالية إلى مجلد البناء للتعامل معها بحرية
+  true
+}
+
 build() {
-  cd "$srcdir/helwan-terminal"
+  cd "$startdir"
   meson setup build --prefix=/usr
   ninja -C build
 }
 
 package() {
-  cd "$srcdir/helwan-terminal"
+  cd "$startdir"
   DESTDIR="${pkgdir}" ninja -C build install
 
   # حذف ملف gschemas.compiled لو اتولد
