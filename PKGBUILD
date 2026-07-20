@@ -10,17 +10,17 @@ license=('GPL3')
 depends=('gtk3' 'vte3' 'glib2')
 makedepends=('meson' 'ninja')
 
-source=("$pkgname::git+file://$PWD")
+source=("$pkgname-$pkgver.tar.gz")
 sha256sums=('SKIP')
 
 build() {
-  cd "$srcdir/$pkgname"
+  cd "$srcdir/$pkgname-$pkgver"
   meson setup build --prefix=/usr
   ninja -C build
 }
 
 package() {
-  cd "$srcdir/$pkgname"
+  cd "$srcdir/$pkgname-$pkgver"
   DESTDIR="${pkgdir}" ninja -C build install
 
   # حذف ملف gschemas.compiled لو اتولد
