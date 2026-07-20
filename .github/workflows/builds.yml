@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     container:
       image: archlinux:base-devel
 
@@ -16,17 +17,21 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pacman -Sy --noconfirm
-          pacman -S --noconfirm base-devel gtk3 vte3 glib2 meson ninja
+          pacman -Syu --noconfirm
+          pacman -S --needed --noconfirm \
+            base-devel git meson ninja gtk3 vte3 glib2
 
-      - name: Prepare tarball and build package
-        shell: bash
+      - name: Create source tarball
         run: |
-          tar --warning=no-file-changed --exclude='.git' --exclude='build' -czf hel-terminal-0.1.4.tar.gz .
-          
-          # السماح لـ makepkg بالبناء مباشرة داخل الحاوية
-          export EUID=1000
-          makepkg -sf --noconfirm --asroot
+          mkdir source
+          cp -a . source/hel-terminal
+          tar -C source -czf hel-terminal-0.1.4.tar.gz hel-terminal
+
+      - name: Build package
+        run: |
+          useradd -m builder
+          chown -R builder:builder .
+          su builder -c "makepkg -sf --noconfirm"
 
       - name: Upload package
         uses: actions/upload-artifact@v4
