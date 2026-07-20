@@ -5,7 +5,7 @@ pkgver=0.1.4
 pkgrel=6
 pkgdesc="A powerful and customizable terminal emulator for Helwan Linux."
 arch=('x86_64')
-url="https://github.com/helwan-linux/hel-terminal"
+url="https://github.com/helwan-linux/helwan-terminal"
 license=('GPL3')
 
 depends=('gtk3' 'vte3' 'glib2')
@@ -15,7 +15,7 @@ source=("${pkgname}-${pkgver}.tar.gz")
 sha256sums=('SKIP')
 
 build() {
-    cd "${srcdir}/${pkgname}"
+    cd "${srcdir}"
 
     meson setup build \
         --prefix=/usr \
@@ -25,7 +25,7 @@ build() {
 }
 
 package() {
-    cd "${srcdir}/${pkgname}"
+    cd "${srcdir}"
 
     DESTDIR="${pkgdir}" ninja -C build install
 
