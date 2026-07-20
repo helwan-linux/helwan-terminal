@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Helwan Terminal
+Comment=A powerful terminal emulator developed at Helwan University
+Exec=helwan-terminal
+Icon=helwan-terminal
+Terminal=false
+Type=Application
+Categories=System;TerminalEmulator;Utility;
+StartupNotify=true

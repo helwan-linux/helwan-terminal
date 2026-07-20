@@ -1,6 +1,6 @@
-# Maintainer: Saeed <your_email@example.com>
+# Maintainer: Saeed Badrelden <helwanlinux@gmail.com>
 
-pkgname=hel-terminal
+pkgname=helwan-terminal
 pkgver=0.1.4
 pkgrel=6
 pkgdesc="A powerful and customizable terminal emulator for Helwan Linux."
@@ -14,34 +14,19 @@ source=("git+${url}.git")
 sha256sums=('SKIP')
 
 build() {
-  # الانتقال للمجلد الذي تم استنساخه
   cd "$srcdir/helwan-terminal"
-
-  # البحث عن ملف meson.build وتحديد المجلد الذي يحتوي عليه
-  # سنقوم بإنشاء مجلد build في المكان الذي يوجد به ملف meson.build
-  if [ -f "meson.build" ]; then
-    meson setup build --prefix=/usr
-  else
-    # إذا كان meson.build داخل مجلد فرعي
-    find . -name meson.build -exec dirname {} \; | xargs -I {} meson setup build {} --prefix=/usr
-  fi
-
+  meson setup build --prefix=/usr
   ninja -C build
 }
 
 package() {
   cd "$srcdir/helwan-terminal"
-  
-  # تثبيت الملفات عبر ninja
   DESTDIR="${pkgdir}" ninja -C build install
 
-  # تثبيت الملف التنفيذي
-  install -Dm755 build/helwan-terminal "${pkgdir}/usr/bin/hel-terminal"
-
-  # نسخ ملف الإعدادات
-  install -Dm644 helwan-terminal/data/helwan-terminal.gschema.xml \
-    "${pkgdir}/usr/share/glib-2.0/schemas/helwan-terminal.gschema.xml"
-
-  # حذف ملف الفهرس إذا وُجد في مجلد التثبيت لكي لا يتعارض مع النظام
+  # حذف ملف gschemas.compiled لو اتولد
   rm -f "${pkgdir}/usr/share/glib-2.0/schemas/gschemas.compiled"
+}
+
+post_install() {
+  glib-compile-schemas /usr/share/glib-2.0/schemas/
 }

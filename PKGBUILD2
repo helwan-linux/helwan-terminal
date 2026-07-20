@@ -1,0 +1,26 @@
+# Maintainer: Saeed Badrelden <helwanlinux@gmail.com>
+pkgname=helwan-terminal
+pkgver=0.1.4
+pkgrel=6
+pkgdesc="A powerful and customizable terminal emulator for Helwan Linux."
+arch=('x86_64')
+url="https://github.com/helwan-linux/helwan-terminal"
+license=('GPL3')
+depends=('gtk3' 'vte3' 'glib2')
+makedepends=('meson' 'ninja' 'git')
+
+source=("${pkgname}::git+${url}.git")
+sha256sums=('SKIP')
+
+build() {
+  arch-meson "${pkgname}" build
+  meson compile -C build
+}
+
+package() {
+  DESTDIR="${pkgdir}" meson install -C build
+}
+
+post_install() {
+  glib-compile-schemas /usr/share/glib-2.0/schemas/
+}

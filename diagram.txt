@@ -1,11 +1,10 @@
-helwan-terminal/
+
 📁 helwan-terminal/
 ├── 📄 LICENSE
 ├── 📄 README.md
 ├── 📁 build
 │   ├── 📄 build.ninja
 │   ├── 📄 compile_commands.json
-│   ├── 📄 helwan-terminal
 │   ├── 📁 helwan-terminal.p
 │   │   ├── 📄 src_main.c.o
 │   │   └── 📄 src_terminal_window.c.o
@@ -24,7 +23,8 @@ helwan-terminal/
 │   │   └── 📄 meson-info.json
 │   ├── 📁 meson-logs
 │   │   ├── 📄 install-log.txt
-│   │   └── 📄 meson-log.txt
+│   │   ├── 📄 meson-log.txt
+│   │   └── 📄 meson-setup.txt
 │   └── 📁 meson-private
 │       ├── 📄 build.dat
 │       ├── 📄 cmd_line.txt
@@ -34,6 +34,8 @@ helwan-terminal/
 │       ├── 📄 meson.lock
 │       ├── 📄 meson_benchmark_setup.dat
 │       ├── 📄 meson_test_setup.dat
+│       ├── 📄 sanity_check_for_c.c
+│       ├── 📄 sanity_check_for_c.exe
 │       ├── 📄 sanitycheckc.c
 │       └── 📄 sanitycheckc.exe
 ├── 📁 data
@@ -46,15 +48,12 @@ helwan-terminal/
 │                   └── 📄 helwan-terminal.png
 ├── 📄 meson.build
 └── 📁 src
-    ├── 📄 config_manager.c
-    ├── 📄 config_manager.h
+    ├── 📄 about.c
+    ├── 📄 font_settings.c
     ├── 📄 main.c
-    ├── 📄 main.h
-    ├── 📄 shortcuts.c
-    ├── 📄 shortcuts.h
-    ├── 📄 terminal_tab.c
-    ├── 📄 terminal_tab.h
+    ├── 📄 mouse_events.c
+    ├── 📄 preferences.c
+    ├── 📄 tabs.c
     ├── 📄 terminal_window.c
     ├── 📄 terminal_window.h
-    ├── 📄 utils.c
-    └── 📄 utils.h
+    └── 📄 key_events.c
