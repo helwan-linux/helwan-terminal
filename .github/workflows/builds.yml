@@ -17,17 +17,17 @@ jobs:
       - name: Install dependencies
         run: |
           pacman -Sy --noconfirm
-          pacman -S --noconfirm sudo base-devel git
+          pacman -S --noconfirm sudo base-devel gtk3 vte3 glib2 meson ninja
 
-      - name: Create builder
+      - name: Create builder user
         run: |
           useradd -m builder
           echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
           chown -R builder:builder .
 
-      - name: Build package
+      - name: Build package locally without git extraction
         run: |
-          sudo -u builder makepkg -sf --noconfirm
+          sudo -u builder makepkg -b --noconfirm
 
       - name: Upload package
         uses: actions/upload-artifact@v4
