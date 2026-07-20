@@ -23,13 +23,13 @@ jobs:
         run: |
           useradd -m builder
           echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-          chown -R builder:builder /__w/hel-terminal/hel-terminal
+          chown -R builder:builder ${{ github.workspace }}
 
       - name: Prepare local tarball and build as builder
         shell: bash
         run: |
           su - builder -c "
-            cd /__w/hel-terminal/hel-terminal
+            cd ${{ github.workspace }}
             tar --warning=no-file-changed --exclude='.git' --exclude='build' -czf hel-terminal-0.1.4.tar.gz .
             makepkg -sf --noconfirm
           "
