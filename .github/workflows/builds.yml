@@ -23,7 +23,10 @@ jobs:
         env:
           EUID: "1000"
         run: |
-          tar --warning=no-file-changed --exclude='.git' --exclude='build' -czf hel-terminal-0.1.4.tar.gz .
+          # استبعاد المجلدات غير الضرورية وضغط الملفات بأمان تام
+          tar --exclude='.git' --exclude='build' --exclude='*.pkg.tar.zst' -czf hel-terminal-0.1.4.tar.gz .
+          
+          # بناء الحزمة
           makepkg -sf --noconfirm
 
       - name: Upload package
