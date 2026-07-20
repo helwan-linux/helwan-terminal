@@ -52,3 +52,4 @@ jobs:
         with:
           name: fedora-package
           path: /root/rpmbuild/RPMS/**/*.rpm
+          
