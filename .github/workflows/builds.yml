@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     container:
       image: archlinux:base-devel
 
@@ -17,24 +16,28 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pacman -Syu --noconfirm
-          pacman -S --needed --noconfirm base-devel git meson ninja gtk3 vte3 glib2
+          pacman -Sy --noconfirm
+          pacman -S --noconfirm sudo base-devel gtk3 vte3 glib2 meson ninja
 
-      - name: Create source tarball
-        run: |
-          mkdir -p /tmp/pkgsrc/hel-terminal
-          rsync -a \
-            --exclude=.git \
-            --exclude=build \
-            --exclude=.github \
-            ./ /tmp/pkgsrc/hel-terminal/
-          tar -C /tmp/pkgsrc -czf "$GITHUB_WORKSPACE/hel-terminal-0.1.4.tar.gz" hel-terminal
-
-      - name: Build package
+      - name: Create builder user and set permissions
         run: |
           useradd -m builder
-          chown -R builder:builder "$GITHUB_WORKSPACE"
-          su builder -c "cd $GITHUB_WORKSPACE && makepkg -sf --noconfirm"
+          echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+          # نقل ملكية مجلد العمل بالكامل للمستخدم الجديد لتجنب أي مشاكل صلاحيات
+          chown -R builder:builder /__w/hel-terminal/hel-terminal
+
+      - name: Build package as builder
+        shell: bash
+        run: |
+          su - builder -c "
+            cd /__w/hel-terminal/hel-terminal
+            
+            # ضغط المجلد مع تجاهل تحذيرات تغير الملفات الطفيفة أثناء القراءة
+            tar --warning=no-file-changed --exclude='.git' --exclude='build' -czf hel-terminal-0.1.4.tar.gz .
+            
+            # بناء الحزمة بالمستخدم العادي كما يطلب نظام Arch تماماً
+            makepkg -sf --noconfirm
+          "
 
       - name: Upload package
         uses: actions/upload-artifact@v4
