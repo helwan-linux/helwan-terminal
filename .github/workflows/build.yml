@@ -4,51 +4,64 @@ on:
   push:
     branches: [ "main", "master" ]
   release:
-    types: [published]
+    types: [ published ]
 
 jobs:
   build-arch:
     runs-on: ubuntu-latest
     container:
       image: archlinux:base-devel
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Prepare user and build
         run: |
-          useradd -m builder && echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && chown -hR builder:builder .
+          useradd -m builder
+          echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+          chown -R builder:builder .
+
       - name: Build Arch Package (.zst)
         run: sudo -u builder makepkg -sf --noconfirm
+
       - uses: actions/upload-artifact@v4
         with:
           name: arch-package
-          path: *.pkg.tar.zst
+          path: "*.pkg.tar.zst"
 
   build-debian:
     runs-on: ubuntu-latest
     container:
       image: debian:latest
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Build Debian Package (.deb)
         run: |
-          apt-get update && apt-get install -y dpkg-dev debhelper meson ninja-build build-essential
+          apt-get update
+          apt-get install -y dpkg-dev debhelper meson ninja-build build-essential
           dpkg-buildpackage -us -uc -b
+
       - uses: actions/upload-artifact@v4
         with:
           name: debian-package
-          path: ../*.deb
+          path: "../*.deb"
 
   build-fedora:
     runs-on: ubuntu-latest
     container:
       image: fedora:latest
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Build RPM Package (.rpm)
         run: |
           dnf install -y rpm-build rpmdevtools meson ninja-build gcc gtk3-devel vte3-devel glib2-devel
           rpmbuild -ba hel-terminal.spec
+
       - uses: actions/upload-artifact@v4
         with:
           name: fedora-package
-          path: /root/rpmbuild/RPMS/**/*.rpm
+          path: "/root/rpmbuild/RPMS/**/*.rpm"
