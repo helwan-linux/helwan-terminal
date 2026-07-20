@@ -17,22 +17,16 @@ jobs:
       - name: Install dependencies
         run: |
           pacman -Sy --noconfirm
-          pacman -S --noconfirm sudo base-devel gtk3 vte3 glib2 meson ninja
+          pacman -S --noconfirm base-devel gtk3 vte3 glib2 meson ninja
 
-      - name: Create builder user and fix permissions
-        run: |
-          useradd -m builder
-          echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-          chown -R builder:builder ${{ github.workspace }}
-
-      - name: Prepare local tarball and build as builder
+      - name: Prepare tarball and build package
         shell: bash
         run: |
-          su - builder -c "
-            cd ${{ github.workspace }}
-            tar --warning=no-file-changed --exclude='.git' --exclude='build' -czf hel-terminal-0.1.4.tar.gz .
-            makepkg -sf --noconfirm
-          "
+          tar --warning=no-file-changed --exclude='.git' --exclude='build' -czf hel-terminal-0.1.4.tar.gz .
+          
+          # السماح لـ makepkg بالبناء مباشرة داخل الحاوية
+          export EUID=1000
+          makepkg -sf --noconfirm --asroot
 
       - name: Upload package
         uses: actions/upload-artifact@v4
