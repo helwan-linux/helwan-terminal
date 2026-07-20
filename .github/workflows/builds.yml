@@ -8,12 +8,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: archlinux:base-devel
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build Arch Linux Package
-        uses: LemonBoy/action-makepkg@v1
+      - name: Install dependencies
+        run: |
+          pacman -Sy --noconfirm
+          pacman -S --noconfirm base-devel gtk3 vte3 glib2 meson ninja
+
+      - name: Build package
+        env:
+          EUID: "1000"
+        run: |
+          tar --warning=no-file-changed --exclude='.git' --exclude='build' -czf hel-terminal-0.1.4.tar.gz .
+          makepkg -sf --noconfirm
 
       - name: Upload package
         uses: actions/upload-artifact@v4
