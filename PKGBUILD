@@ -7,24 +7,27 @@ pkgdesc="A powerful and customizable terminal emulator for Helwan Linux."
 arch=('x86_64')
 url="https://github.com/helwan-linux/hel-terminal"
 license=('GPL3')
+
 depends=('gtk3' 'vte3' 'glib2')
 makedepends=('meson' 'ninja')
 
-source=("$pkgname-$pkgver.tar.gz")
+source=("${pkgname}-${pkgver}.tar.gz")
 sha256sums=('SKIP')
 
 build() {
-  cd "$srcdir/$pkgname"
-  meson setup build --prefix=/usr
-  ninja -C build
+    cd "${srcdir}/${pkgname}"
+
+    meson setup build \
+        --prefix=/usr \
+        --buildtype=release
+
+    ninja -C build
 }
 
 package() {
-  cd "$srcdir/$pkgname"
-  DESTDIR="${pkgdir}" ninja -C build install
-  rm -f "${pkgdir}/usr/share/glib-2.0/schemas/gschemas.compiled"
-}
+    cd "${srcdir}/${pkgname}"
 
-post_install() {
-  glib-compile-schemas /usr/share/glib-2.0/schemas/
+    DESTDIR="${pkgdir}" ninja -C build install
+
+    rm -f "${pkgdir}/usr/share/glib-2.0/schemas/gschemas.compiled"
 }
