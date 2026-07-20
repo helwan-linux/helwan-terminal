@@ -1,4 +1,4 @@
-name: Build Packages
+name: Build Arch Package
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-arch:
+  build:
     runs-on: ubuntu-latest
     container:
       image: archlinux:base-devel
@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: |
           pacman -Sy --noconfirm
-          pacman -S --noconfirm sudo base-devel meson ninja gtk3 vte4
+          pacman -S --noconfirm sudo base-devel
 
       - name: Create builder
         run: |
@@ -29,30 +29,8 @@ jobs:
         run: |
           sudo -u builder makepkg -sf --noconfirm
 
-      - name: Upload Arch package
+      - name: Upload package
         uses: actions/upload-artifact@v4
         with:
           name: arch-package
           path: "*.pkg.tar.zst"
-
-  build-fedora:
-    runs-on: ubuntu-latest
-    container:
-      image: fedora:44
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: |
-          dnf -y install rpm-build rpmdevtools meson ninja-build gcc gtk3-devel vte291-devel glib2-devel
-
-      - name: Build RPM
-        run: |
-          rpmbuild -ba hel-terminal.spec
-
-      - name: Upload RPM package
-        uses: actions/upload-artifact@v4
-        with:
-          name: rpm-package
-          path: "/root/rpmbuild/RPMS/**/*.rpm"
