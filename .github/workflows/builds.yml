@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: |
           pacman -Sy --noconfirm
-          pacman -S --noconfirm sudo base-devel
+          pacman -S --noconfirm sudo base-devel git
 
       - name: Create builder
         run: |
