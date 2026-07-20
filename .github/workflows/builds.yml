@@ -30,7 +30,7 @@ jobs:
         run: |
           su - builder -c "
             cd /__w/hel-terminal/hel-terminal
-            tar --exclude='.git' --exclude='build' -czf hel-terminal-0.1.4.tar.gz .
+            tar --warning=no-file-changed --exclude='.git' --exclude='build' -czf hel-terminal-0.1.4.tar.gz .
             makepkg -sf --noconfirm
           "
 
