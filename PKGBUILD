@@ -10,23 +10,17 @@ license=('GPL3')
 depends=('gtk3' 'vte3' 'glib2')
 makedepends=('meson' 'ninja')
 
-# الاعتماد على المجلد الحالي مباشرة بدون git clone خارجي أثناء البناء
-source=("$pkgname-$pkgver.tar.gz")
+source=("$pkgname::git+file://$PWD")
 sha256sums=('SKIP')
 
-prepare() {
-  # نقل الملفات الحالية إلى مجلد البناء للتعامل معها بحرية
-  true
-}
-
 build() {
-  cd "$startdir"
+  cd "$srcdir/$pkgname"
   meson setup build --prefix=/usr
   ninja -C build
 }
 
 package() {
-  cd "$startdir"
+  cd "$srcdir/$pkgname"
   DESTDIR="${pkgdir}" ninja -C build install
 
   # حذف ملف gschemas.compiled لو اتولد
