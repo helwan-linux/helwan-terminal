@@ -22,8 +22,8 @@ jobs:
       - name: Prepare local tarball for makepkg
         run: |
           cd ..
-          tar --exclude='.git' -czf helwan-terminal-0.1.4.tar.gz helwan-terminal
-          mv helwan-terminal-0.1.4.tar.gz helwan-terminal/
+          tar --exclude='.git' --exclude='build' -czf helwan-terminal.tar.gz helwan-terminal
+          mv helwan-terminal.tar.gz helwan-terminal/
           cd helwan-terminal
 
       - name: Create builder user
