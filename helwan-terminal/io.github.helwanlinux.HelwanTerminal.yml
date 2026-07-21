@@ -23,7 +23,7 @@ modules:
     sources:
       - type: archive
         url: https://gitlab.gnome.org/GNOME/vte/-/archive/0.76.2/vte-0.76.2.tar.gz
-        sha256: 3d4e8f1f0f2a8f0a6d7c7c8b0a3d9a6b4a7e5f3c2d1b0a9e8f7d6c5b4a3f2e1d0
+        sha256: 70a38449fda947e5cb7b4cecbe8a7a77586c799168bfb22162708c94084f21ae
 
   - name: helwan-terminal
     buildsystem: meson
