@@ -16,16 +16,18 @@ jobs:
 
       - name: Install dependencies
         run: |
-          dnf install -y rpm-build rpmdevtools gcc meson ninja-build gtk3-devel vte291-devel glib2-devel
+          dnf install -y rpm-build gcc meson ninja-build gtk3-devel vte291-devel glib2-devel
 
-      - name: Configure and Build
+      - name: Setup Meson Build
         run: |
-          meson setup build
-          meson compile -C build
-          # يمكنك هنا إعداد ملفات SPEC وبناء حزمة الـ RPM
+          meson setup builddir
 
-      - name: Upload RPM package
+      - name: Compile with Ninja
+        run: |
+          meson compile -C builddir
+
+      - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: rpm-package
-          path: build/  # أو مسار الحزمة الناتجة (.rpm)
+          name: rpm-build-files
+          path: builddir/
