@@ -9,21 +9,25 @@ jobs:
   build-flatpak:
     runs-on: ubuntu-latest
 
-    container:
-      image: ghcr.io/flathub/flatpak-builder:base
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Flatpak Runtime
+      - name: Install Flatpak Builder
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+
+      - name: Add Flathub Repository
         run: |
           flatpak remote-add --if-not-exists --user flathub \
-            https://flathub.org/repo/flathub.flatpakrepo
+            https://dl.flathub.org/repo/flathub.flatpakrepo
 
+      - name: Install GNOME SDK and Runtime
+        run: |
           flatpak install -y --user flathub \
-            org.gnome.Sdk/x86_64/46 \
-            org.gnome.Platform/x86_64/46
+            org.gnome.Sdk//46 \
+            org.gnome.Platform//46
 
       - name: Build Flatpak
         run: |
@@ -34,7 +38,7 @@ jobs:
             build-dir \
             io.github.helwanlinux.HelwanTerminal.yml
 
-      - name: Build Bundle
+      - name: Build Flatpak Bundle
         run: |
           flatpak build-bundle \
             ~/.local/share/flatpak/repo \
