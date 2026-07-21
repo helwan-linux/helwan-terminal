@@ -1,5 +1,14 @@
 # Helwan Terminal
 
+
+⚠️ Important Notice
+
+The special Helwan Linux commands and features currently depend on the Helwan Linux environment and its supporting Bash components. Therefore, these commands may not work on Debian-based or Red Hat-based distributions at this time.
+
+Helwan Terminal itself is being developed to become more powerful, flexible, and widely compatible. We need your help! If you are a developer or Linux enthusiast, your contributions, testing, ideas, and feedback can help us improve Helwan Terminal and make it better and more powerful with every release.
+
+Your help is greatly appreciated. ❤️
+
 **A simple, beautiful, and powerful terminal emulator for your daily tasks.**
 
 ---
