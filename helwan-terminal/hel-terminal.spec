@@ -1,4 +1,4 @@
-Name:           hel-terminal
+Name:           helwan-terminal
 Version:        0.1.3
 Release:        1%{?dist}
 Summary:        Helwan Terminal
