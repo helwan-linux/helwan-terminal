@@ -40,6 +40,7 @@ jobs:
             org.gnome.Platform//46
 
       - name: Verify Project Files
+        working-directory: ./helwan-terminal
         run: |
           echo "Current directory:"
           pwd
@@ -60,6 +61,7 @@ jobs:
           ls -l ./meson.build
 
       - name: Build Flatpak
+        working-directory: ./helwan-terminal
         run: |
           flatpak-builder \
             --user \
@@ -69,6 +71,7 @@ jobs:
             ./io.github.helwanlinux.HelwanTerminal.yml
 
       - name: Create Flatpak Bundle
+        working-directory: ./helwan-terminal
         run: |
           flatpak build-bundle \
             ~/.local/share/flatpak/repo \
@@ -79,5 +82,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: helwan-terminal-flatpak
-          path: helwan-terminal.flatpak
+          path: helwan-terminal/helwan-terminal.flatpak
           if-no-files-found: error
