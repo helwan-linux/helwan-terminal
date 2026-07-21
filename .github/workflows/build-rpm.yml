@@ -35,14 +35,11 @@ jobs:
           echo "Current directory:"
           pwd
 
-          echo "Repository files:"
-          ls -la
-
           echo "Project directory:"
           ls -la helwan-terminal
 
           test -f helwan-terminal/meson.build
-          test -f helwan-terminal/helwan-terminal.spec
+          test -f helwan-terminal/hel-terminal.spec
           test -d helwan-terminal/src
           test -d helwan-terminal/data
 
@@ -59,7 +56,7 @@ jobs:
 
       - name: Copy SPEC file
         run: |
-          cp helwan-terminal/helwan-terminal.spec \
+          cp helwan-terminal/hel-terminal.spec \
             ~/rpmbuild/SPECS/helwan-terminal.spec
 
       - name: Create source archive
