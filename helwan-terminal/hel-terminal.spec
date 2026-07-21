@@ -1,11 +1,10 @@
 Name:           hel-terminal
 Version:        0.1.3
 Release:        1%{?dist}
-Summary:        A powerful and customizable terminal emulator for Helwan Linux
+Summary:        Helwan Terminal
 
 License:        GPL-3.0-or-later
 URL:            https://github.com/helwan-linux/helwan-terminal
-Source0:        %{name}-%{version}.tar.gz
 
 BuildRequires:  gcc
 BuildRequires:  meson
@@ -22,14 +21,25 @@ Requires:       glib2
 Helwan Terminal is a GTK3 and VTE-based terminal emulator developed for Helwan Linux.
 
 %prep
-%autosetup
 
 %build
-%meson
-%meson_build
+meson setup builddir
+meson compile -C builddir
 
 %install
-%meson_install
+rm -rf %{buildroot}
+
+install -Dm755 builddir/helwan-terminal \
+    %{buildroot}%{_bindir}/helwan-terminal
+
+install -Dm644 data/helwan-terminal.desktop \
+    %{buildroot}%{_datadir}/applications/helwan-terminal.desktop
+
+install -Dm644 data/helwan-terminal.gschema.xml \
+    %{buildroot}%{_datadir}/glib-2.0/schemas/helwan-terminal.gschema.xml
+
+install -Dm644 data/icons/hicolor/64x64/apps/helwan-terminal.png \
+    %{buildroot}%{_datadir}/icons/hicolor/64x64/apps/helwan-terminal.png
 
 %files
 %license LICENSE
