@@ -61,7 +61,7 @@ jobs:
 
       - name: Create source archive
         run: |
-          mkdir -p /tmp/helwan-terminal-0.1.3
+          mkdir -p /tmp/helwan-terminal-0.1.4
 
           cp -r helwan-terminal/src \
             /tmp/helwan-terminal-0.1.4/
