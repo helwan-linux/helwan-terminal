@@ -5,6 +5,7 @@ Summary:        Helwan Terminal
 
 License:        GPL-3.0-or-later
 URL:            https://github.com/helwan-linux/helwan-terminal
+Source0:        %{name}-%{version}.tar.gz
 
 BuildRequires:  gcc
 BuildRequires:  meson
@@ -21,9 +22,10 @@ Requires:       glib2
 Helwan Terminal is a GTK3 and VTE-based terminal emulator developed for Helwan Linux.
 
 %prep
+%autosetup
 
 %build
-meson setup . builddir
+meson setup builddir
 meson compile -C builddir
 
 %install
