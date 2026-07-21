@@ -67,6 +67,7 @@ jobs:
             --user \
             --disable-rofiles-fuse \
             --force-clean \
+            --repo=repo \
             build-dir \
             ./io.github.helwanlinux.HelwanTerminal.yml
 
@@ -74,7 +75,7 @@ jobs:
         working-directory: ./helwan-terminal
         run: |
           flatpak build-bundle \
-            ~/.local/share/flatpak/repo \
+            repo \
             helwan-terminal.flatpak \
             io.github.helwanlinux.HelwanTerminal \
             stable
