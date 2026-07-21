@@ -2,7 +2,9 @@ name: Build DEB Package
 
 on:
   push:
-    branches: ["main", "master"]
+    branches:
+      - main
+      - master
   workflow_dispatch:
 
 jobs:
@@ -29,16 +31,38 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Configure Build
+      - name: Verify project structure
+        run: |
+          echo "Current directory:"
+          pwd
+
+          echo "Repository files:"
+          ls -la
+
+          echo "Checking project directory:"
+          ls -la helwan-terminal
+
+          test -f helwan-terminal/meson.build
+          test -d helwan-terminal/src
+          test -d helwan-terminal/data
+
+          echo "Project structure is correct."
+
+      - name: Configure Meson
+        working-directory: helwan-terminal
         run: |
           meson setup builddir --prefix=/usr
 
       - name: Compile
+        working-directory: helwan-terminal
         run: |
           meson compile -C builddir
 
       - name: Create DEB package
+        working-directory: helwan-terminal
         run: |
+          rm -rf package
+
           mkdir -p package/DEBIAN
           mkdir -p package/usr/bin
           mkdir -p package/usr/share/applications
@@ -46,19 +70,19 @@ jobs:
           mkdir -p package/usr/share/icons/hicolor/64x64/apps
 
           cp builddir/helwan-terminal \
-            package/usr/bin/
+            package/usr/bin/helwan-terminal
 
           cp data/helwan-terminal.desktop \
-            package/usr/share/applications/
+            package/usr/share/applications/helwan-terminal.desktop
 
           cp data/helwan-terminal.gschema.xml \
-            package/usr/share/glib-2.0/schemas/
+            package/usr/share/glib-2.0/schemas/helwan-terminal.gschema.xml
 
           cp data/icons/hicolor/64x64/apps/helwan-terminal.png \
-            package/usr/share/icons/hicolor/64x64/apps/
+            package/usr/share/icons/hicolor/64x64/apps/helwan-terminal.png
 
           cat > package/DEBIAN/control << 'EOF'
-          Package: hel-terminal
+          Package: helwan-terminal
           Version: 0.1.3-1
           Section: utils
           Priority: optional
@@ -69,10 +93,32 @@ jobs:
            A powerful and customizable terminal emulator for Helwan Linux.
           EOF
 
-          dpkg-deb --build package hel-terminal_0.1.3-1_amd64.deb
+          cat > package/DEBIAN/postinst << 'EOF'
+          #!/bin/sh
+          set -e
+
+          if command -v glib-compile-schemas >/dev/null 2>&1; then
+              glib-compile-schemas /usr/share/glib-2.0/schemas
+          fi
+
+          exit 0
+          EOF
+
+          chmod 755 package/DEBIAN/postinst
+
+          dpkg-deb --build \
+            --root-owner-group \
+            package \
+            helwan-terminal_0.1.3-1_amd64.deb
+
+      - name: Verify DEB package
+        working-directory: helwan-terminal
+        run: |
+          ls -lh helwan-terminal_0.1.3-1_amd64.deb
+          dpkg-deb --info helwan-terminal_0.1.3-1_amd64.deb
 
       - name: Upload DEB Package
         uses: actions/upload-artifact@v4
         with:
-          name: hel-terminal-deb
-          path: hel-terminal_0.1.3-1_amd64.deb
+          name: helwan-terminal-deb
+          path: helwan-terminal/helwan-terminal_0.1.3-1_amd64.deb
