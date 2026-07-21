@@ -1,4 +1,4 @@
-https://github.com/helwan-linux/helwan-terminal/
+helwan-terminal/
 📁 helwan-terminal/
 ├── 📄 LICENSE
 ├── 📄 README.md
@@ -10,6 +10,10 @@ https://github.com/helwan-linux/helwan-terminal/
 │           └── 📁 64x64
 │               └── 📁 apps
 │                   ├── 📄 helwan-terminal.png
+│                   ├── 📄 helwan-terminal2.png
+│                   └── 📄 helwan-terminal3.png
+├── 📄 hel-terminal.spec
+├── 📄 io.github.helwanlinux.HelwanTerminal.yml
 ├── 📄 meson.build
 └── 📁 src
     ├── 📄 about.c
