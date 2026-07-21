@@ -2,33 +2,77 @@ name: Build DEB Package
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
   workflow_dispatch:
 
 jobs:
   build-deb:
     runs-on: ubuntu-latest
+
     container:
       image: debian:bookworm-slim
 
     steps:
-      - uses: actions/checkout@v4
-
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y build-essential meson ninja-build libgtk-3-dev libvte-2.91-dev libglib2.0-dev
+          apt-get install -y \
+            git \
+            build-essential \
+            meson \
+            ninja-build \
+            libgtk-3-dev \
+            libvte-2.91-dev \
+            libglib2.0-dev \
+            dpkg-dev
 
-      - name: Setup Meson Build
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Configure Build
         run: |
-          meson setup builddir
+          meson setup builddir --prefix=/usr
 
-      - name: Compile with Ninja
+      - name: Compile
         run: |
           meson compile -C builddir
 
-      - name: Upload Build Artifact
+      - name: Create DEB package
+        run: |
+          mkdir -p package/DEBIAN
+          mkdir -p package/usr/bin
+          mkdir -p package/usr/share/applications
+          mkdir -p package/usr/share/glib-2.0/schemas
+          mkdir -p package/usr/share/icons/hicolor/64x64/apps
+
+          cp builddir/helwan-terminal \
+            package/usr/bin/
+
+          cp data/helwan-terminal.desktop \
+            package/usr/share/applications/
+
+          cp data/helwan-terminal.gschema.xml \
+            package/usr/share/glib-2.0/schemas/
+
+          cp data/icons/hicolor/64x64/apps/helwan-terminal.png \
+            package/usr/share/icons/hicolor/64x64/apps/
+
+          cat > package/DEBIAN/control << 'EOF'
+          Package: hel-terminal
+          Version: 0.1.3-1
+          Section: utils
+          Priority: optional
+          Architecture: amd64
+          Maintainer: Saeed Badreldin <helwanlinux@gmail.com>
+          Depends: libgtk-3-0, libvte-2.91-0, libglib2.0-0
+          Description: Helwan Terminal
+           A powerful and customizable terminal emulator for Helwan Linux.
+          EOF
+
+          dpkg-deb --build package hel-terminal_0.1.3-1_amd64.deb
+
+      - name: Upload DEB Package
         uses: actions/upload-artifact@v4
         with:
-          name: deb-build-files
-          path: builddir/
+          name: hel-terminal-deb
+          path: hel-terminal_0.1.3-1_amd64.deb
