@@ -17,16 +17,18 @@ jobs:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y build-essential meson ninja-build libgtk-3-dev libvte-2.91-dev libglib2.0-dev dpkg-dev
+          apt-get install -y build-essential meson ninja-build libgtk-3-dev libvte-2.91-dev libglib2.0-dev
 
-      - name: Configure and Build
+      - name: Setup Meson Build
         run: |
-          meson setup build
-          meson compile -C build
-          # يمكنك هنا إضافة أوامر حزم دبيان الخاصة بك (مثل dpkg أو checkinstall إذا لزم الأمر)
-          
-      - name: Upload DEB package
+          meson setup builddir
+
+      - name: Compile with Ninja
+        run: |
+          meson compile -C builddir
+
+      - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: deb-package
-          path: build/  # أو مسار الحزمة الناتجة (.deb)
+          name: deb-build-files
+          path: builddir/
