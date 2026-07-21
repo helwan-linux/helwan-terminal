@@ -83,7 +83,7 @@ jobs:
 
           cat > package/DEBIAN/control << 'EOF'
           Package: helwan-terminal
-          Version: 0.1.3-1
+          Version: 0.1.4-1
           Section: utils
           Priority: optional
           Architecture: amd64
@@ -109,16 +109,16 @@ jobs:
           dpkg-deb --build \
             --root-owner-group \
             package \
-            helwan-terminal_0.1.3-1_amd64.deb
+            helwan-terminal_0.1.4-1_amd64.deb
 
       - name: Verify DEB package
         working-directory: helwan-terminal
         run: |
-          ls -lh helwan-terminal_0.1.3-1_amd64.deb
-          dpkg-deb --info helwan-terminal_0.1.3-1_amd64.deb
+          ls -lh helwan-terminal_0.1.4-1_amd64.deb
+          dpkg-deb --info helwan-terminal_0.1.4-1_amd64.deb
 
       - name: Upload DEB Package
         uses: actions/upload-artifact@v4
         with:
           name: helwan-terminal-deb
-          path: helwan-terminal/helwan-terminal_0.1.3-1_amd64.deb
+          path: helwan-terminal/helwan-terminal_0.1.4-1_amd64.deb
