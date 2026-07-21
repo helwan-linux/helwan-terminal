@@ -1,0 +1,31 @@
+name: Build RPM Package
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-rpm:
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          dnf install -y rpm-build rpmdevtools gcc meson ninja-build gtk3-devel vte291-devel glib2-devel
+
+      - name: Configure and Build
+        run: |
+          meson setup build
+          meson compile -C build
+          # يمكنك هنا إعداد ملفات SPEC وبناء حزمة الـ RPM
+
+      - name: Upload RPM package
+        uses: actions/upload-artifact@v4
+        with:
+          name: rpm-package
+          path: build/  # أو مسار الحزمة الناتجة (.rpm)
