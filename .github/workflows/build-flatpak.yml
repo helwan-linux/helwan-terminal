@@ -2,7 +2,9 @@ name: Build Flatpak Package
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches:
+      - main
+      - master
   workflow_dispatch:
 
 jobs:
@@ -10,24 +12,52 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install Flatpak Builder
+      - name: Install Flatpak and Flatpak Builder
         run: |
           sudo apt-get update
-          sudo apt-get install -y flatpak flatpak-builder
+          sudo apt-get install -y \
+            flatpak \
+            flatpak-builder
 
       - name: Add Flathub Repository
         run: |
-          flatpak remote-add --if-not-exists --user flathub \
+          flatpak remote-add \
+            --if-not-exists \
+            --user \
+            flathub \
             https://dl.flathub.org/repo/flathub.flatpakrepo
 
       - name: Install GNOME SDK and Runtime
         run: |
-          flatpak install -y --user flathub \
+          flatpak install \
+            --user \
+            --noninteractive \
+            flathub \
             org.gnome.Sdk//46 \
             org.gnome.Platform//46
+
+      - name: Verify Project Files
+        run: |
+          echo "Current directory:"
+          pwd
+
+          echo "Project files:"
+          ls -la
+
+          echo "Checking Manifest:"
+          test -f ./io.github.helwanlinux.HelwanTerminal.yml
+
+          echo "Manifest found successfully:"
+          ls -l ./io.github.helwanlinux.HelwanTerminal.yml
+
+          echo "Checking Meson:"
+          test -f ./meson.build
+
+          echo "Meson file found successfully:"
+          ls -l ./meson.build
 
       - name: Build Flatpak
         run: |
@@ -36,9 +66,9 @@ jobs:
             --disable-rofiles-fuse \
             --force-clean \
             build-dir \
-            io.github.helwanlinux.HelwanTerminal.yml
+            ./io.github.helwanlinux.HelwanTerminal.yml
 
-      - name: Build Flatpak Bundle
+      - name: Create Flatpak Bundle
         run: |
           flatpak build-bundle \
             ~/.local/share/flatpak/repo \
@@ -50,3 +80,4 @@ jobs:
         with:
           name: helwan-terminal-flatpak
           path: helwan-terminal.flatpak
+          if-no-files-found: error
