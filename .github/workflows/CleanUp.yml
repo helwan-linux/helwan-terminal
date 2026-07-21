@@ -1,0 +1,43 @@
+name: Clean
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cleanup_all:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Delete all Artifacts and Caches
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "=== 1. Cleaning Artifacts ==="
+          ARTIFACTS=$(gh api repos/$REPO/actions/artifacts --jq '.artifacts[].id' 2>/dev/null || echo "")
+          
+          if [ -z "$ARTIFACTS" ]; then
+            echo "No artifacts found."
+          else
+            for id in $ARTIFACTS; do
+              echo "Deleting artifact ID: $id"
+              gh api -X DELETE repos/$REPO/actions/artifacts/$id || echo "Failed to delete artifact $id"
+            done
+          fi
+
+          echo ""
+          echo "=== 2. Cleaning Caches ==="
+          CACHES=$(gh api repos/$REPO/actions/caches --jq '.actions_caches[].id' 2>/dev/null || echo "")
+          
+          if [ -z "$CACHES" ]; then
+            echo "No caches found."
+          else
+            for id in $CACHES; do
+              echo "Deleting cache ID: $id"
+              gh api -X DELETE repos/$REPO/actions/caches/$id || echo "Failed to delete cache $id"
+            done
+          fi
+          
+          echo ""
+          echo "Cleanup process finished!"
