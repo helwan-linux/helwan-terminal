@@ -1,1 +1,7 @@
-option('distro', type : 'string', value : 'arch', description : 'Target distribution: arch, deb, or rpm')
+option(
+  'distro',
+  type : 'combo',
+  choices : ['arch', 'debian', 'redhat'],
+  value : 'arch',
+  description : 'Target distribution family'
+)
