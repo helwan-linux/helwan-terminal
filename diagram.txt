@@ -1,27 +1,44 @@
 helwan-terminal/
 📁 helwan-terminal/
+├── 📁 .github
+│   └── 📁 workflows
+│       ├── 📄 CleanUp.yml
+│       ├── 📄 build-arch.yml
+│       ├── 📄 build-deb.yml
+│       ├── 📄 build-flatpak.yml
+│       └── 📄 build-rpm.yml
+├── 📄 CONTRIBUTING.md
 ├── 📄 LICENSE
+├── 📄 PKGBUILD
 ├── 📄 README.md
-├── 📁 data
-│   ├── 📄 helwan-terminal.desktop
-│   ├── 📄 helwan-terminal.gschema.xml
-│   └── 📁 icons
-│       └── 📁 hicolor
-│           └── 📁 64x64
-│               └── 📁 apps
-│                   ├── 📄 helwan-terminal.png
-│                   ├── 📄 helwan-terminal2.png
-│                   └── 📄 helwan-terminal3.png
-├── 📄 hel-terminal.spec
-├── 📄 io.github.helwanlinux.HelwanTerminal.yml
-├── 📄 meson.build
-└── 📁 src
-    ├── 📄 about.c
-    ├── 📄 font_settings.c
-    ├── 📄 key_events.c
-    ├── 📄 main.c
-    ├── 📄 mouse_events.c
-    ├── 📄 preferences.c
-    ├── 📄 tabs.c
-    ├── 📄 terminal_window.c
-    └── 📄 terminal_window.h
+├── 📄 diagram.txt
+└── 📁 helwan-terminal
+    ├── 📄 LICENSE
+    ├── 📄 README.md
+    ├── 📁 data
+    │   ├── 📄 helwan-commands-arch.sh
+    │   ├── 📄 helwan-commands-debian.sh
+    │   ├── 📄 helwan-commands-redhat.sh
+    │   ├── 📄 helwan-terminal.desktop
+    │   ├── 📄 helwan-terminal.gschema.xml
+    │   └── 📁 icons
+    │       └── 📁 hicolor
+    │           └── 📁 64x64
+    │               └── 📁 apps
+    │                   ├── 📄 helwan-terminal.png
+    │                   ├── 📄 helwan-terminal2.png
+    │                   └── 📄 helwan-terminal3.png
+    ├── 📄 hel-terminal.spec
+    ├── 📄 io.github.helwanlinux.HelwanTerminal.yml
+    ├── 📄 meson.build
+    ├── 📄 meson_options.txt
+    └── 📁 src
+        ├── 📄 about.c
+        ├── 📄 font_settings.c
+        ├── 📄 key_events.c
+        ├── 📄 main.c
+        ├── 📄 mouse_events.c
+        ├── 📄 preferences.c
+        ├── 📄 tabs.c
+        ├── 📄 terminal_window.c
+        └── 📄 terminal_window.h
