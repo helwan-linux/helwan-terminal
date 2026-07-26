@@ -1,4 +1,5 @@
-helwan-terminal/
+https://github.com/helwan-linux/helwan-terminal
+
 📁 helwan-terminal/
 ├── 📁 .github
 │   └── 📁 workflows
