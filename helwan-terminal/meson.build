@@ -44,7 +44,7 @@ install_data(
   rename : 'helwan-terminal.png'
 )
 
-# اختيار ملف الأوامر بناءً على التوزيعة المستهدفة دون دمج
+# اختيار ملف الأوامر بناءً على التوزيعة المستهدفة
 distro = get_option('distro')
 commands_file = 'data/helwan-commands-' + distro + '.sh'
 
