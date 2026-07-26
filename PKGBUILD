@@ -14,6 +14,10 @@ makedepends=('meson' 'ninja')
 source=()
 sha256sums=()
 
+prepare() {
+    cp -a "${startdir}/helwan-terminal" "${srcdir}/helwan-terminal"
+}
+
 build() {
     cd "${srcdir}/helwan-terminal"
 
