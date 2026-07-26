@@ -30,18 +30,7 @@ meson compile -C builddir
 
 %install
 rm -rf %{buildroot}
-
-install -Dm755 builddir/helwan-terminal \
-    %{buildroot}%{_bindir}/helwan-terminal
-
-install -Dm644 data/helwan-terminal.desktop \
-    %{buildroot}%{_datadir}/applications/helwan-terminal.desktop
-
-install -Dm644 data/helwan-terminal.gschema.xml \
-    %{buildroot}%{_datadir}/glib-2.0/schemas/helwan-terminal.gschema.xml
-
-install -Dm644 data/icons/hicolor/64x64/apps/helwan-terminal.png \
-    %{buildroot}%{_datadir}/icons/hicolor/64x64/apps/helwan-terminal.png
+DESTDIR=%{buildroot} meson install -C builddir
 
 %files
 %license LICENSE
@@ -49,6 +38,7 @@ install -Dm644 data/icons/hicolor/64x64/apps/helwan-terminal.png \
 %{_datadir}/applications/helwan-terminal.desktop
 %{_datadir}/glib-2.0/schemas/helwan-terminal.gschema.xml
 %{_datadir}/icons/hicolor/64x64/apps/helwan-terminal.png
+%{_datadir}/helwan-terminal/helwan-commands.sh
 
 %post
 if [ -x /usr/bin/glib-compile-schemas ]; then
@@ -61,5 +51,5 @@ if [ -x /usr/bin/glib-compile-schemas ]; then
 fi
 
 %changelog
-* Tue Jul 21 2026 Saeed Badreldin <helwanlinux@gmail.com> - 0.1.3-1
+* Tue Jul 21 2026 Saeed Badreldin <helwanlinux@gmail.com> - 0.1.5-1
 - Initial RPM package
