@@ -39,6 +39,7 @@ jobs:
           ls -la helwan-terminal
 
           test -f helwan-terminal/meson.build
+          test -f helwan-terminal/meson_options.txt
           test -f helwan-terminal/hel-terminal.spec
           test -d helwan-terminal/src
           test -d helwan-terminal/data
@@ -70,6 +71,9 @@ jobs:
             /tmp/helwan-terminal-0.1.5/
 
           cp helwan-terminal/meson.build \
+            /tmp/helwan-terminal-0.1.5/
+
+          cp helwan-terminal/meson_options.txt \
             /tmp/helwan-terminal-0.1.5/
 
           cp helwan-terminal/LICENSE \
