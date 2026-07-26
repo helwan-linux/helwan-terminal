@@ -61,27 +61,27 @@ jobs:
 
       - name: Create source archive
         run: |
-          mkdir -p /tmp/helwan-terminal-0.1.4
+          mkdir -p /tmp/helwan-terminal-0.1.5
 
           cp -r helwan-terminal/src \
-            /tmp/helwan-terminal-0.1.4/
+            /tmp/helwan-terminal-0.1.5/
 
           cp -r helwan-terminal/data \
-            /tmp/helwan-terminal-0.1.4/
+            /tmp/helwan-terminal-0.1.5/
 
           cp helwan-terminal/meson.build \
-            /tmp/helwan-terminal-0.1.4/
+            /tmp/helwan-terminal-0.1.5/
 
           cp helwan-terminal/LICENSE \
-            /tmp/helwan-terminal-0.1.4/
+            /tmp/helwan-terminal-0.1.5/
 
           cp helwan-terminal/README.md \
-            /tmp/helwan-terminal-0.1.4/
+            /tmp/helwan-terminal-0.1.5/
 
           tar -czf \
-            ~/rpmbuild/SOURCES/helwan-terminal-0.1.4.tar.gz \
+            ~/rpmbuild/SOURCES/helwan-terminal-0.1.5.tar.gz \
             -C /tmp \
-            helwan-terminal-0.1.4
+            helwan-terminal-0.1.5
 
       - name: Build RPM
         run: |
