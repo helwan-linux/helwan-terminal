@@ -42,13 +42,13 @@ jobs:
         run: |
           useradd -m builder
           passwd -d builder
-          chown -R builder:builder .
-          su builder -c "cd helwan-terminal && makepkg -sf --noconfirm"
+          chown -R builder:builder ${{ github.workspace }}
+          su builder -c "cd ${{ github.workspace }} && makepkg -sf --noconfirm"
 
       - name: Collect package
         run: |
           mkdir -p pkg-output
-          cp helwan-terminal/*.pkg.tar.zst pkg-output/
+          cp *.pkg.tar.zst pkg-output/
           ls -lh pkg-output
 
       - name: Upload package
