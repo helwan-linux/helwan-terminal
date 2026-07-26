@@ -1,0 +1,1 @@
+option('distro', type : 'string', value : 'arch', description : 'Target distribution: arch, deb, or rpm')

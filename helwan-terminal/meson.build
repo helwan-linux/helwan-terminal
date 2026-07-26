@@ -44,7 +44,12 @@ install_data(
   rename : 'helwan-terminal.png'
 )
 
+# اختيار ملف الأوامر بناءً على التوزيعة المستهدفة دون دمج
+distro = get_option('distro')
+commands_file = 'data/helwan-commands-' + distro + '.sh'
+
 install_data(
-  'data/helwan-commands.sh',
-  install_dir : join_paths(get_option('datadir'), 'helwan-terminal')
+  commands_file,
+  install_dir : join_paths(get_option('datadir'), 'helwan-terminal'),
+  rename : 'helwan-commands.sh'
 )
