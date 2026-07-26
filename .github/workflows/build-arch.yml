@@ -31,17 +31,19 @@ jobs:
 
       - name: Prepare source tarball
         run: |
-          mkdir -p /tmp/helwan-terminal-${PKGVER}
-          cp -r helwan-terminal/* /tmp/helwan-terminal-${PKGVER}/
+          mkdir -p /tmp/helwan-terminal-${{ env.PKGVER }}
+          cp -r helwan-terminal/* /tmp/helwan-terminal-${{ env.PKGVER }}/
           cd /tmp
           tar --exclude='.git' --exclude='build' --exclude='*.pkg.tar.zst' \
-              -czf helwan-terminal-${PKGVER}.tar.gz helwan-terminal-${PKGVER}
-          mv helwan-terminal-${PKGVER}.tar.gz $GITHUB_WORKSPACE/
+              -czf helwan-terminal-${{ env.PKGVER }}.tar.gz helwan-terminal-${{ env.PKGVER }}
+          mv helwan-terminal-${{ env.PKGVER }}.tar.gz $GITHUB_WORKSPACE/
 
-      - name: Build package
+      - name: Create non-root user and build package
         run: |
-          cd helwan-terminal
-          makepkg -sf --noconfirm
+          useradd -m builder
+          passwd -d builder
+          chown -R builder:builder .
+          su builder -c "cd helwan-terminal && makepkg -sf --noconfirm"
 
       - name: Collect package
         run: |
