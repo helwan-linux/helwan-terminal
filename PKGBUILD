@@ -11,8 +11,8 @@ license=('GPL3')
 depends=('gtk3' 'vte3' 'glib2')
 makedepends=('meson' 'ninja')
 
-source=("${pkgname}-${pkgver}.tar.gz")
-sha256sums=('SKIP')
+source=()
+sha256sums=()
 
 build() {
     cd "${srcdir}/helwan-terminal"
