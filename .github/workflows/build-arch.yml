@@ -29,26 +29,33 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Prepare source tarball
+      - name: Verify files
         run: |
-          mkdir -p /tmp/helwan-terminal-${{ env.PKGVER }}
-          cp -r helwan-terminal/* /tmp/helwan-terminal-${{ env.PKGVER }}/
-          cd /tmp
-          tar --exclude='.git' --exclude='build' --exclude='*.pkg.tar.zst' \
-              -czf helwan-terminal-${{ env.PKGVER }}.tar.gz helwan-terminal-${{ env.PKGVER }}
-          mv helwan-terminal-${{ env.PKGVER }}.tar.gz $GITHUB_WORKSPACE/
+          echo "Current directory:"
+          pwd
 
-      - name: Create non-root user and build package
+          echo "Repository contents:"
+          ls -la
+
+          echo "Project contents:"
+          ls -la helwan-terminal
+
+          echo "Checking PKGBUILD:"
+          test -f PKGBUILD
+
+      - name: Create non-root builder user
         run: |
           useradd -m builder
-          passwd -d builder
-          chown -R builder:builder ${{ github.workspace }}
-          su builder -c "cd ${{ github.workspace }} && makepkg -sf --noconfirm"
+          chown -R builder:builder "$GITHUB_WORKSPACE"
+
+      - name: Build Arch package
+        run: |
+          su builder -c "cd '$GITHUB_WORKSPACE' && makepkg -sf --noconfirm"
 
       - name: Collect package
         run: |
           mkdir -p pkg-output
-          cp *.pkg.tar.zst pkg-output/
+          cp ./*.pkg.tar.zst pkg-output/
           ls -lh pkg-output
 
       - name: Upload package
