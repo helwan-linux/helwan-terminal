@@ -43,15 +43,20 @@ jobs:
           ls -la helwan-terminal
 
           test -f helwan-terminal/meson.build
+          test -f helwan-terminal/meson_options.txt
+          test -f helwan-terminal/src/main.c
           test -d helwan-terminal/src
           test -d helwan-terminal/data
+          test -f helwan-terminal/data/helwan-commands-debian.sh
 
           echo "Project structure is correct."
 
       - name: Configure Meson
         working-directory: helwan-terminal
         run: |
-          meson setup builddir --prefix=/usr
+          meson setup builddir \
+            --prefix=/usr \
+            -Ddistro=debian
 
       - name: Compile
         working-directory: helwan-terminal
@@ -68,6 +73,7 @@ jobs:
           mkdir -p package/usr/share/applications
           mkdir -p package/usr/share/glib-2.0/schemas
           mkdir -p package/usr/share/icons/hicolor/64x64/apps
+          mkdir -p package/usr/share/helwan-terminal
 
           cp builddir/helwan-terminal \
             package/usr/bin/helwan-terminal
@@ -80,6 +86,12 @@ jobs:
 
           cp data/icons/hicolor/64x64/apps/helwan-terminal.png \
             package/usr/share/icons/hicolor/64x64/apps/helwan-terminal.png
+
+          cp data/helwan-commands-debian.sh \
+            package/usr/share/helwan-terminal/helwan-commands.sh
+
+          chmod 755 \
+            package/usr/share/helwan-terminal/helwan-commands.sh
 
           cat > package/DEBIAN/control << 'EOF'
           Package: helwan-terminal
@@ -116,6 +128,7 @@ jobs:
         run: |
           ls -lh helwan-terminal_0.1.5-1_amd64.deb
           dpkg-deb --info helwan-terminal_0.1.5-1_amd64.deb
+          dpkg-deb --contents helwan-terminal_0.1.5-1_amd64.deb
 
       - name: Upload DEB Package
         uses: actions/upload-artifact@v4
