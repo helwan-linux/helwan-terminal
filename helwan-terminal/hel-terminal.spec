@@ -25,7 +25,7 @@ Helwan Terminal is a GTK3 and VTE-based terminal emulator developed for Helwan L
 %autosetup
 
 %build
-meson setup builddir -Ddistro=rpm
+meson setup builddir -Ddistro=redhat
 meson compile -C builddir
 
 %install
