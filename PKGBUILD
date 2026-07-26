@@ -1,7 +1,7 @@
 # Maintainer: Saeed Badreldin <helwanlinux@gmail.com>
 
 pkgname=hel-terminal
-pkgver=0.1.4
+pkgver=0.1.5
 pkgrel=6
 pkgdesc="A powerful and customizable terminal emulator for Helwan Linux."
 arch=('x86_64')

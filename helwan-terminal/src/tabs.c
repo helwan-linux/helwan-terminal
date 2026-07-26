@@ -36,8 +36,8 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
     g_signal_connect(vte, "key-press-event", G_CALLBACK(on_terminal_key_press), self);
     g_signal_connect(vte, "button-press-event", G_CALLBACK(on_terminal_button_press), vte);
 
-    // تشغيل الأمر مع عمل Cast لتجنب تحذير الـ const
     if (command_to_execute != NULL && command_to_execute[0] != NULL) {
+        // تشغيل الأمر الممرر
         vte_terminal_spawn_async(VTE_TERMINAL(vte),
                                  VTE_PTY_DEFAULT,
                                  NULL,
@@ -46,14 +46,19 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
                                  G_SPAWN_SEARCH_PATH,
                                  NULL, NULL, NULL, -1, NULL, NULL, NULL);
     } else {
-        char *default_cmd[] = {"/bin/bash", NULL};
+        // تشغيل Bash مع ملف أوامر Helwan Terminal
+        char *cmd_file = "/usr/share/helwan-terminal/helwan-commands.sh";
+        char *default_cmd[] = {"/bin/bash", "--rcfile", cmd_file, NULL};
+
+        gchar **envp = g_get_environ();
         vte_terminal_spawn_async(VTE_TERMINAL(vte),
                                  VTE_PTY_DEFAULT,
                                  NULL,
                                  default_cmd,
-                                 NULL,
+                                 envp,
                                  G_SPAWN_SEARCH_PATH,
                                  NULL, NULL, NULL, -1, NULL, NULL, NULL);
+        g_strfreev(envp);
     }
 
     GtkWidget *label_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -70,7 +75,6 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
     gtk_widget_show_all(label_box);
     gtk_widget_show(vte);
 
-    // تطبيق إعدادات الخط مع التحقق من تعريف المتغير
     if (cached_font_string != NULL) {
         PangoFontDescription *temp_font_desc = pango_font_description_from_string(cached_font_string);
         double applied_font_size = (double)pango_font_description_get_size(temp_font_desc) / PANGO_SCALE;
@@ -83,6 +87,7 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
 
     return vte;
 }
+
 
 void on_new_tab_button_clicked(GtkButton *button, HelwanTerminalWindow *window) {
     (void)button;

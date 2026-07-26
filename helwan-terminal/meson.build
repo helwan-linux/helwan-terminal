@@ -1,5 +1,5 @@
 project('helwan-terminal', 'c',
-  version : '0.1.4',
+  version : '0.1.5',
   default_options : ['c_std=gnu11'])
 
 # المكتبات المطلوبة
@@ -42,4 +42,9 @@ install_data(
   'data/icons/hicolor/64x64/apps/helwan-terminal.png',
   install_dir : join_paths(get_option('datadir'), 'icons', 'hicolor', '64x64', 'apps'),
   rename : 'helwan-terminal.png'
+)
+
+install_data(
+  'data/helwan-commands.sh',
+  install_dir : join_paths(get_option('datadir'), 'helwan-terminal')
 )
