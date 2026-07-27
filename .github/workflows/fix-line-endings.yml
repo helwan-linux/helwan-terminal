@@ -1,0 +1,51 @@
+name: Fix Line Endings
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-line-endings:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fix text files
+        run: |
+          git config --global core.autocrlf false
+
+          find . -type f \
+            ! -path './.git/*' \
+            ! -iname '*.png' \
+            ! -iname '*.jpg' \
+            ! -iname '*.jpeg' \
+            ! -iname '*.gif' \
+            ! -iname '*.webp' \
+            ! -iname '*.bmp' \
+            ! -iname '*.ico' \
+            -exec sed -i 's/\r$//' {} +
+
+      - name: Add .gitattributes
+        run: |
+          cat > .gitattributes <<'EOF'
+          * text=auto eol=lf
+          *.sh text eol=lf
+          EOF
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No changes needed."
+          else
+            git commit -m "Fix line endings across project"
+            git push
+          fi
