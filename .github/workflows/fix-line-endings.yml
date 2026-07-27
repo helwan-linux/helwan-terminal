@@ -1,4 +1,4 @@
-name: Fix Line Endings
+name: Fix All Project Line Endings
 
 on:
   workflow_dispatch:
@@ -13,11 +13,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Fix text files
+      - name: Configure Git
         run: |
-          git config --global core.autocrlf false
+          git config core.autocrlf false
+          git config core.eol lf
 
+      - name: Convert all text files to LF
+        run: |
           find . -type f \
             ! -path './.git/*' \
             ! -iname '*.png' \
@@ -29,7 +34,7 @@ jobs:
             ! -iname '*.ico' \
             -exec sed -i 's/\r$//' {} +
 
-      - name: Add .gitattributes
+      - name: Configure line endings permanently
         run: |
           cat > .gitattributes <<'EOF'
           * text=auto eol=lf
@@ -39,16 +44,10 @@ jobs:
       - name: Show changed files
         run: |
           git add -A
-
-          echo "======================================"
-          echo "Files changed after fixing line endings:"
-          echo "======================================"
-
+          echo "Changed files:"
           git diff --cached --name-only
 
-          echo "======================================"
-
-      - name: Commit changes
+      - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -56,6 +55,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes needed."
           else
-            git commit -m "Fix line endings across project"
+            git commit -m "Normalize all project files to LF"
             git push
           fi
