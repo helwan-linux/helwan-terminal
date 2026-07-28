@@ -1,43 +1,81 @@
-name: Clean
+```yaml
+name: Cleanup GitHub Actions
 
 on:
   workflow_dispatch:
 
+permissions:
+  actions: write
+  contents: write
+
 jobs:
-  cleanup_all:
+  cleanup:
+    name: Delete Runs, Artifacts and Caches
     runs-on: ubuntu-latest
-    permissions:
-      actions: write
+
     steps:
-      - name: Delete all Artifacts and Caches
+      - name: Cleanup all workflow runs
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
         run: |
-          echo "=== 1. Cleaning Artifacts ==="
-          ARTIFACTS=$(gh api repos/$REPO/actions/artifacts --jq '.artifacts[].id' 2>/dev/null || echo "")
-          
-          if [ -z "$ARTIFACTS" ]; then
-            echo "No artifacts found."
-          else
-            for id in $ARTIFACTS; do
-              echo "Deleting artifact ID: $id"
-              gh api -X DELETE repos/$REPO/actions/artifacts/$id || echo "Failed to delete artifact $id"
-            done
-          fi
+          echo "=========================================="
+          echo "Cleaning GitHub Actions"
+          echo "Repository: $REPO"
+          echo "=========================================="
 
           echo ""
-          echo "=== 2. Cleaning Caches ==="
-          CACHES=$(gh api repos/$REPO/actions/caches --jq '.actions_caches[].id' 2>/dev/null || echo "")
-          
-          if [ -z "$CACHES" ]; then
-            echo "No caches found."
-          else
-            for id in $CACHES; do
-              echo "Deleting cache ID: $id"
-              gh api -X DELETE repos/$REPO/actions/caches/$id || echo "Failed to delete cache $id"
-            done
-          fi
-          
+          echo "Deleting workflow runs..."
+
+          gh run list \
+            --repo "$REPO" \
+            --limit 1000 \
+            --json databaseId \
+            --jq '.[].databaseId' |
+          while read -r RUN_ID; do
+            if [ -n "$RUN_ID" ]; then
+              echo "Deleting run: $RUN_ID"
+              gh run delete "$RUN_ID" --repo "$REPO" || true
+            fi
+          done
+
           echo ""
-          echo "Cleanup process finished!"
+          echo "Deleting artifacts..."
+
+          gh api \
+            --paginate \
+            --method GET \
+            "/repos/$REPO/actions/artifacts?per_page=100" \
+            --jq '.artifacts[].id' |
+          while read -r ARTIFACT_ID; do
+            if [ -n "$ARTIFACT_ID" ]; then
+              echo "Deleting artifact: $ARTIFACT_ID"
+              gh api \
+                --method DELETE \
+                "/repos/$REPO/actions/artifacts/$ARTIFACT_ID" || true
+            fi
+          done
+
+          echo ""
+          echo "Deleting Actions caches..."
+
+          gh extension install actions/gh-actions-cache 2>/dev/null || true
+
+          gh actions-cache delete-all \
+            --confirm \
+            --repo "$REPO" || true
+
+          echo ""
+          echo "=========================================="
+          echo "Cleanup completed."
+          echo "=========================================="
+          echo ""
+          echo "NOTE:"
+          echo "- Workflow runs were deleted."
+          echo "- Artifacts were deleted."
+          echo "- Actions caches were deleted."
+          echo "- Runner temporary storage is automatically discarded."
+          echo "- Delete this cleanup workflow manually."
+          echo "- Delete other workflow files manually."
+          echo "=========================================="
+```
