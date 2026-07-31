@@ -6,15 +6,19 @@ void on_about_button_clicked(GtkButton *button, HelwanTerminalWindow *window) {
     (void)button; // مش مستخدم
 
     gtk_show_about_dialog(GTK_WINDOW(window),
-                          "program-name", "Helwan Terminal",
-                          "version", "0.1.4", // رقم الإصدار
-                          "copyright", "© 2025 Helwan Linux",
-                          "comments", "A powerful terminal emulator developed at Helwan Linux.",
-                          "website", "https://github.com/helwan-linux/helwan-terminal",
-                          "authors", (const char *[]){"Saeed Badrelden", NULL},
-                          "license-type", GTK_LICENSE_GPL_3_0,
-                          "logo-icon-name", "helwan-terminal",
-                          NULL);
+        "program-name", "Helwan Terminal",
+        "version", "0.1.5",
+        "copyright", "© 2025 Helwan Linux",
+        "comments", "A powerful terminal emulator developed at Helwan Linux.\n\n"
+                    "• Copy/Paste: Ctrl + Shift + C / V\n"
+                    "• Zoom: Ctrl + + / - / 0\n"
+                    "• Settings: Click the settings icon in the top bar\n"
+                    "• New Tab: Click the plus icon to start a new session",
+        "website", "https://github.com/helwan-linux/helwan-terminal",
+        "authors", (const char *[]){"Saeed Badreldin", NULL},
+        "license-type", GTK_LICENSE_GPL_3_0,
+        "logo-icon-name", "helwan-terminal",
+        NULL);
 }
 
 // Callback لزر "Help"
