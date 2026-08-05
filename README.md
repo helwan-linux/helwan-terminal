@@ -13,6 +13,21 @@ Your help is greatly appreciated. ❤️
 
 ---
 
+## Roadmap
+
+### Future Features
+
+- **Chain Commands**
+  - Support natural command chaining using words like:
+    - `then`
+    - `ثم`
+    - `y`
+    - `然后`
+
+- **Offline AI Assistant**
+  - A future local AI assistant integrated into Helwan Terminal.
+  - Designed to help users understand commands, suggest solutions, and interact with the terminal more naturally while keeping user data private.
+    
 ### Why Helwan Terminal?
 Helwan Terminal is built to make using the command line easier and more enjoyable. Whether you are a student, a developer, or just a home user, we have designed it to be fast, reliable, and distraction-free.
 
