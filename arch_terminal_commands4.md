@@ -27,7 +27,8 @@ This document provides a comprehensive guide to commands available in the Helwan
 * **Syntax:** `install <package>`
 * **Examples:**
   * **English:** `install firefox`
-  * **العربية:** `تثبيت firefox`
+  * **العربية:
+  * ** `تثبيت firefox`
   * **Español:** `instalar firefox`
   * **中文:** `安装 firefox`
 
