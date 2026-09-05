@@ -47,8 +47,16 @@ GtkWidget *helwan_terminal_window_new_tab(HelwanTerminalWindow *self, char * con
                                  NULL, NULL, NULL, -1, NULL, NULL, NULL);
     } else {
         // تشغيل Bash مع ملف أوامر Helwan Terminal
-        char *cmd_file = "/usr/share/helwan-terminal/helwan-commands.sh";
-        char *default_cmd[] = {"/bin/bash", "--rcfile", cmd_file, NULL};
+        const char *cmd_file = "/usr/share/helwan-terminal/helwan-commands.sh";
+		char *default_cmd[] = {
+			"/bin/bash",
+			"--noprofile",
+			"--rcfile",
+			(char *)cmd_file,
+			"-i",
+			NULL
+		};
+				
 
         gchar **envp = g_get_environ();
         vte_terminal_spawn_async(VTE_TERMINAL(vte),
