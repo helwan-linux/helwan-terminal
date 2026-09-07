@@ -201,6 +201,13 @@ helwan_help() {
     cat << 'EOF'
 
     you can use ; for sequential commands 
+    ---------------------------------------
+    update ; search firefox
+    مساعدة ; تحديث ; تثبيت (اسم الحزمة)        
+    sincronizar ; actualizar ; buscar firefox
+    同步 ; 更新 ; 搜索 firefox
+
+    
 ┌────────────────────────────────────────────────────────────────────────┐
 │                      HELWAN LINUX TERMINAL HELP                        │
 ├────────────────────┬────────────────────┬──────────────────┬───────────┤
