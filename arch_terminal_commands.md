@@ -3,7 +3,14 @@
 This document provides a comprehensive guide to commands available in the Helwan Linux terminal across multiple languages (English, Arabic, Spanish, and Chinese).
 
 ---
+# you can use ; for sequential commands 
+    ---------------------------------------
+    update ; search firefox
+    مساعدة ; تحديث ; تثبيت (اسم الحزمة)        
+    sincronizar ; actualizar ; buscar firefox
+    同步 ; 更新 ; 搜索 firefox
 
+---
 ## 1. version / الإصدار / versión / 版本
 * **Description:** Show Helwan Linux distribution information.
 * **Syntax:** `version`
