@@ -200,7 +200,7 @@ helwan_reboot() {
 helwan_help() {
     cat << 'EOF'
 
-    you can use && for multicommands 
+    you can use ; for sequential commands 
 ┌────────────────────────────────────────────────────────────────────────┐
 │                      HELWAN LINUX TERMINAL HELP                        │
 ├────────────────────┬────────────────────┬──────────────────┬───────────┤
