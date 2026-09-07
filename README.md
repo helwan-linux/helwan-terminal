@@ -18,11 +18,18 @@ Your help is greatly appreciated. ❤️
 ### Future Features
 
 - **Chain Commands**
-  - Support natural command chaining using words like:
-    - `then`
-    - `ثم`
-    - `y`
-    - `然后`
+  | Operator | Description |
+|---|---|
+| `;` | Sequential commands |
+| `&&` | Conditional execution (if previous succeeds) |
+| `||` | Conditional execution (if previous fails) |
+| `|` | Piping commands |
+| `&` | Background commands |
+| `>` | Output redirection |
+| `>>` | Appending output |
+| `<` | Input redirection |
+| `2>` | Error redirection |
+| `2>&1` | Combine output and errors |
 
 - **Offline AI Assistant**
   - A future local AI assistant integrated into Helwan Terminal.
